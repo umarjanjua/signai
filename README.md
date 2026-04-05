@@ -23,9 +23,7 @@ The interpretability bridge is:
 
 > if internal behavior is structured enough to model from inputs, then interpretability is not only post-hoc explanation; it can also become a runtime signal for integrity monitoring.
 
-## Why this public version focuses on I1
 
-Among the available results, the cleanest public-facing evidence is the inference monitor:
 - strong quantitative signal
 - simple visual comparison against established baselines
 - no need to expose the full training pipeline
@@ -37,13 +35,10 @@ Among the available results, the cleanest public-facing evidence is the inferenc
 - `figures/roc_mahal_svhn.png` — Mahalanobis ROC on SVHN near-OOD
 - `figures/roc_energy_svhn.png` — Energy ROC on SVHN near-OOD
 
-## Suggested public claim
-
-A safe, strong public claim is:
 
 > signAI shows that internal model behavior can be modeled conditionally from inputs strongly enough to support runtime integrity monitoring, with especially strong results for inference-time detection.
 
 ## Full system
 
-The complete system, extended experiments, and internal pipelines are maintained separately.
+The complete system, extended experiments are maintained separately.
 Access is available on request.
