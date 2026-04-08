@@ -216,6 +216,16 @@
       color: var(--accent-dark);
       text-decoration: none;
     }
+    .notice {
+      margin-top: 18px;
+      padding: 14px 16px;
+      background: var(--soft);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      color: var(--accent-dark);
+      font-size: 15px;
+      line-height: 1.5;
+    }
     @media (max-width: 940px) {
       .hero, .manual, .footer, .grid {
         grid-template-columns: 1fr;
@@ -245,6 +255,7 @@
         <a href="#modes">Modes</a>
         <a href="#run">Run</a>
         <a href="#manual">Manual</a>
+        <a href="https://github.com/umarjanjua/signai" target="_blank" rel="noreferrer">GitHub</a>
         <a href="README.md">README</a>
       </div>
     </nav>
@@ -254,9 +265,13 @@
         <div class="eyebrow">Production layer v0.3.0</div>
         <h1>Behavioral integrity monitoring you can actually ship.</h1>
         <p>Attach a monitor to a PyTorch model, calibrate on clean data, then score inference batches and training updates locally or through a managed server. One SDK, four deployment modes, and a privacy model built into the architecture.</p>
+        <div class="notice">
+          This public <code>signai</code> repository is the front door. The full production runtime, SDK, server, and customer delivery layer are maintained in the private <code>signAI-core</code> codebase.
+        </div>
         <div class="actions">
           <a class="btn primary" href="USER_MANUAL.md">Open user manual</a>
           <a class="btn secondary" href="DEPLOY.md">Deployment guide</a>
+          <a class="btn secondary" href="https://github.com/umarjanjua/signai" target="_blank" rel="noreferrer">GitHub repo</a>
           <a class="btn secondary" href="README.md">README</a>
         </div>
       </div>
@@ -366,23 +381,23 @@ docker compose up --build</pre>
           <div class="eyebrow">Customer docs</div>
           <h2>Everything needed to onboard a customer.</h2>
         </div>
-        <p>The repository now includes product-facing setup instructions, deployment notes, runtime examples, and troubleshooting guidance for the production layer.</p>
+        <p>The public repo now includes customer-facing setup instructions and public delivery docs, while making the public-to-private repository boundary explicit for customers.</p>
       </div>
       <div class="grid">
         <div class="card">
           <div class="kicker">README</div>
           <h3>Repository entrypoint</h3>
-          <p>Updated with install paths, deployment modes, CLI usage, Docker commands, privacy boundaries, and edition guidance.</p>
+          <p>Explains what the public repo contains, what stays private, and how customers move from overview to production delivery.</p>
         </div>
         <div class="card">
           <div class="kicker">Manual</div>
           <h3>User manual</h3>
-          <p>A customer-facing walkthrough covering local mode, remote mode, calibration, runtime scoring, authentication, troubleshooting, and rollout guidance.</p>
+          <p>A customer-safe walkthrough adapted from the private product docs covering deployment modes, runtime flow, privacy boundaries, and rollout guidance.</p>
         </div>
         <div class="card">
           <div class="kicker">Deploy</div>
           <h3>Deployment guide</h3>
-          <p>A focused operations doc for self-hosted, Docker, SQLite, and Postgres-backed setups, including health checks and production recommendations.</p>
+          <p>A public deployment overview for hosted, self-hosted, and air-gapped customer conversations without exposing private operational code.</p>
         </div>
         <div class="card">
           <div class="kicker">Privacy</div>
@@ -395,19 +410,20 @@ docker compose up --build</pre>
     <footer class="footer">
       <div>
         <h3>signAI production layer</h3>
-        <p>One SDK, one server contract, and a clean path from local artifact mode to hosted or self-hosted deployments.</p>
+        <p>One SDK, one server contract, and a clean path from public overview to private customer delivery in signAI-core.</p>
       </div>
       <div>
         <h3>Docs</h3>
         <p><a href="README.md">README</a></p>
         <p><a href="USER_MANUAL.md">User manual</a></p>
         <p><a href="DEPLOY.md">Deployment guide</a></p>
+        <p><a href="https://github.com/umarjanjua/signai" target="_blank" rel="noreferrer">GitHub repo</a></p>
       </div>
       <div>
-        <h3>CLI</h3>
-        <p><code>signai serve</code></p>
-        <p><code>signai-server serve</code></p>
-        <p><code>docker compose up --build</code></p>
+        <h3>Customer flow</h3>
+        <p>Review the public site and figures</p>
+        <p>Read the manual and deployment overview</p>
+        <p>Move into private signAI-core delivery</p>
       </div>
     </footer>
   </div>

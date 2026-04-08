@@ -1,44 +1,68 @@
 # signAI
 
-A minimal public artifact for **input-conditioned runtime integrity monitoring** 
+Public front for the private `signAI-core` product.
 
-## What this public repo shows
+This repository is the public-facing overview for signAI. It contains:
 
-This public slice is intentionally narrow:
-- one publishable summary figure
-- a few selected results images
+- the public landing page
+- selected result figures
+- customer-facing overview docs
+- public manual and deployment overview
 
-It is designed to communicate the core idea without exposing the full `signai-core` system.
-Please request access at umarjanjua@live.com
+The full product implementation lives in the private `signAI-core` repository.
+
+## What signAI is
+
+signAI is a runtime behavioral integrity monitor for PyTorch models.
+
+It models the relationship between:
+
+- an input-derived or update-conditioned signature `S`
+- an internal behavior signature `Z`
+
+and scores whether the observed model behavior is consistent with the calibrated baseline.
+
+## Public materials in this repo
+
+- `index.html` - public landing page
+- `USER_MANUAL.md` - customer-facing manual
+- `DEPLOY.md` - public deployment overview
+- `figures/public_results_snapshot.png` - summary figure
+- `figures/roc_i1_svhn.png` - signAI I1 ROC
+- `figures/roc_mahal_svhn.png` - Mahalanobis baseline ROC
+- `figures/roc_energy_svhn.png` - energy baseline ROC
+
+## Repository boundary
+
+### Public `signai` repo
+
+Use this repo to:
+
+- understand the product concept
+- review public figures
+- share the landing page
+- onboard early customer conversations
+
+### Private `signAI-core` repo
+
+The private repo contains:
+
+- the SDK
+- the server runtime
+- calibration and scoring implementation
+- deployment packaging
+- tests and release machinery
 
 ## Core idea
 
-signAI models the relationship between an input-derived signature `S` and an internal behavior signature `Z`.
-At inference time, the strongest public story is the **I1 monitor**:
-- `S`: simple input statistics
-- `Z`: depth-stratified activation statistics
-- anomaly score: conditional Mahalanobis residual
+signAI treats internal model behavior as something that can be monitored at runtime, not only explained after the fact.
 
-The interpretability bridge is:
+If internal behavior is structured enough to model conditionally from inputs or updates, then that structure can become a live integrity signal.
 
-> if internal behavior is structured enough to model from inputs, then interpretability is not only post-hoc explanation; it can also become a runtime signal for integrity monitoring.
+## Access
 
+The complete system and operational delivery are maintained privately.
 
-- strong quantitative signal
-- simple visual comparison against established baselines
-- no need to expose the full training pipeline
+For access or customer deployment discussion, contact:
 
-## Included assets
-
-- `figures/public_results_snapshot.png` — summary figure for sharing
-- `figures/roc_i1_svhn.png` — I1 ROC on SVHN near-OOD
-- `figures/roc_mahal_svhn.png` — Mahalanobis ROC on SVHN near-OOD
-- `figures/roc_energy_svhn.png` — Energy ROC on SVHN near-OOD
-
-
-> signAI shows that internal model behavior can be modeled conditionally from inputs strongly enough to support runtime integrity monitoring, with especially strong results for inference-time detection.
-
-## Full system
-
-The complete system, extended experiments are maintained separately.
-Access is available on request.
+- `umarjanjua@live.com`
