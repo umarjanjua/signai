@@ -226,6 +226,32 @@
       font-size: 15px;
       line-height: 1.5;
     }
+    .invite {
+      margin-top: 18px;
+      padding: 26px;
+      background: linear-gradient(135deg, #f0dcc0 0%, #fff7ea 100%);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      box-shadow: 0 10px 32px rgba(87, 61, 26, 0.08);
+    }
+    .invite p {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.55;
+      max-width: 760px;
+    }
+    .invite-template {
+      margin-top: 18px;
+      background: #241d17;
+      color: #f7e7d0;
+      border-radius: 18px;
+      padding: 18px;
+      font-family: var(--mono);
+      font-size: 13px;
+      line-height: 1.8;
+      overflow: auto;
+    }
     @media (max-width: 940px) {
       .hero, .manual, .footer, .grid {
         grid-template-columns: 1fr;
@@ -372,6 +398,32 @@ signai-server serve \
   --edition community
 
 docker compose up --build</pre>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="invite">
+        <div class="eyebrow">Early access</div>
+        <h2>Want early access to signAI?</h2>
+        <p>Email <a href="mailto:umarjanjua@live.com">umarjanjua@live.com</a> to join the early access list. Include your purpose for exploring signAI and a bit of background on your work so we can route you to the right build and help you test it in the right setting.</p>
+        <div class="invite-template">Subject: signAI early access
+
+Name:
+Company / team:
+Purpose for evaluating signAI:
+Background / current workflow:
+Deployment preference:
+  - local
+  - hosted
+  - self-hosted
+  - air-gapped
+
+What you want to test:</div>
+        <div class="actions">
+          <a class="btn primary" href="mailto:umarjanjua@live.com?subject=signAI%20early%20access&body=Name:%0D%0ACompany%20%2F%20team:%0D%0APurpose%20for%20evaluating%20signAI:%0D%0ABackground%20%2F%20current%20workflow:%0D%0ADeployment%20preference:%0D%0AWhat%20you%20want%20to%20test:%0D%0A">Request early access</a>
+          <a class="btn secondary" href="USER_MANUAL.md">Read the manual first</a>
+          <a class="btn secondary" href="https://github.com/umarjanjua/signai" target="_blank" rel="noreferrer">View public repo</a>
+        </div>
       </div>
     </section>
 
