@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>signAI - Behavioral Integrity Monitoring</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f3efe5;
+      --paper: #fffdf7;
+      --ink: #1f1b16;
+      --muted: #665f55;
+      --line: #d9d0c2;
+      --accent: #ad4f17;
+      --accent-dark: #7e3910;
+      --soft: #efe5d2;
+      --mono: "IBM Plex Mono", monospace;
+      --sans: "Source Sans 3", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--sans);
+      background:
+        radial-gradient(circle at top right, #f7d9bb 0, transparent 28%),
+        linear-gradient(180deg, #f5f0e5 0%, #efe8d8 100%);
+      color: var(--ink);
+    }
+    a { color: inherit; }
+    .shell {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 22px 0;
+    }
+    .brand {
+      font-family: var(--mono);
+      font-size: 20px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .brand span { color: var(--accent); }
+    .nav-links {
+      display: flex;
+      gap: 18px;
+      font-family: var(--mono);
+      font-size: 13px;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: var(--muted);
+    }
+    .hero {
+      display: grid;
+      grid-template-columns: 1.2fr 0.9fr;
+      gap: 28px;
+      padding: 28px 0 48px;
+      align-items: stretch;
+    }
+    .hero-copy, .hero-panel, .card, .manual, .footer {
+      background: rgba(255, 253, 247, 0.82);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      box-shadow: 0 12px 40px rgba(87, 61, 26, 0.07);
+    }
+    .hero-copy {
+      padding: 40px;
+    }
+    .eyebrow {
+      display: inline-block;
+      margin-bottom: 20px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: var(--soft);
+      color: var(--accent-dark);
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    h1, h2, h3 {
+      margin: 0;
+      line-height: 1.05;
+    }
+    h1 {
+      font-size: clamp(40px, 7vw, 72px);
+      letter-spacing: -0.03em;
+      max-width: 760px;
+    }
+    .hero-copy p {
+      margin: 18px 0 0;
+      max-width: 640px;
+      font-size: 21px;
+      line-height: 1.45;
+      color: var(--muted);
+    }
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 28px;
+    }
+    .btn {
+      display: inline-block;
+      padding: 13px 18px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-family: var(--mono);
+      font-size: 13px;
+      border: 1px solid var(--line);
+    }
+    .btn.primary {
+      background: var(--accent);
+      color: #fff7ef;
+      border-color: var(--accent);
+    }
+    .btn.secondary {
+      background: transparent;
+      color: var(--ink);
+    }
+    .hero-panel {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .terminal {
+      background: #241d17;
+      color: #f7e7d0;
+      border-radius: 18px;
+      padding: 18px;
+      font-family: var(--mono);
+      font-size: 13px;
+      line-height: 1.8;
+      overflow: auto;
+      min-height: 320px;
+    }
+    .terminal .dim { color: #c9a57c; }
+    .terminal .ok { color: #88e19d; }
+    .terminal .warn { color: #ffb67f; }
+    .section {
+      padding-top: 28px;
+    }
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: end;
+      margin-bottom: 18px;
+    }
+    .section-head p {
+      margin: 0;
+      max-width: 580px;
+      color: var(--muted);
+      font-size: 18px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 18px;
+    }
+    .card {
+      padding: 24px;
+    }
+    .kicker {
+      color: var(--accent-dark);
+      font-family: var(--mono);
+      font-size: 12px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .card p, .manual p, .footer p, li {
+      color: var(--muted);
+      line-height: 1.55;
+      font-size: 16px;
+    }
+    .manual {
+      margin-top: 18px;
+      padding: 30px;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 24px;
+    }
+    pre {
+      margin: 0;
+      background: #241d17;
+      color: #f7e7d0;
+      border-radius: 18px;
+      padding: 18px;
+      overflow: auto;
+      font-size: 13px;
+      line-height: 1.75;
+      font-family: var(--mono);
+    }
+    ul {
+      padding-left: 20px;
+      margin: 14px 0 0;
+    }
+    .footer {
+      margin-top: 28px;
+      padding: 28px;
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr 0.8fr;
+      gap: 18px;
+    }
+    .footer a {
+      color: var(--accent-dark);
+      text-decoration: none;
+    }
+    @media (max-width: 940px) {
+      .hero, .manual, .footer, .grid {
+        grid-template-columns: 1fr;
+      }
+      .section-head {
+        flex-direction: column;
+        align-items: start;
+      }
+    }
+    @media (max-width: 640px) {
+      .nav {
+        flex-direction: column;
+        align-items: start;
+        gap: 10px;
+      }
+      .hero-copy, .hero-panel, .card, .manual, .footer {
+        border-radius: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <nav class="nav">
+      <a class="brand" href="#">sign<span>AI</span></a>
+      <div class="nav-links">
+        <a href="#modes">Modes</a>
+        <a href="#run">Run</a>
+        <a href="#manual">Manual</a>
+        <a href="README.md">README</a>
+      </div>
+    </nav>
+
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="eyebrow">Production layer v0.3.0</div>
+        <h1>Behavioral integrity monitoring you can actually ship.</h1>
+        <p>Attach a monitor to a PyTorch model, calibrate on clean data, then score inference batches and training updates locally or through a managed server. One SDK, four deployment modes, and a privacy model built into the architecture.</p>
+        <div class="actions">
+          <a class="btn primary" href="USER_MANUAL.md">Open user manual</a>
+          <a class="btn secondary" href="DEPLOY.md">Deployment guide</a>
+          <a class="btn secondary" href="README.md">README</a>
+        </div>
+      </div>
+      <div class="hero-panel">
+        <div class="terminal">
+<div><span class="dim">$</span> pip install "signai[server]"</div>
+<div><span class="dim">$</span> signai-server serve --host 0.0.0.0 --port 8000</div>
+<div><span class="dim">-></span> signAI v0.3.0 (community)</div>
+<div><span class="dim">-></span> docs: http://0.0.0.0:8000/docs</div>
+<div>&nbsp;</div>
+<div><span class="dim">$</span> python app.py</div>
+<div>m = monitor.load(model, endpoint="http://localhost:8000", monitor_id="resnet-prod")</div>
+<div>result = m.score_inference(x, y)</div>
+<div><span class="ok">flagged=False</span> score=3.21 tau=17.60</div>
+<div>result = m.score_training(logits, loss)</div>
+<div><span class="warn">flagged=True</span> score=29.44 tau=15.03</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="modes" class="section">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">Deployment modes</div>
+          <h2>Same scoring API, different routing.</h2>
+        </div>
+        <p>Customers can stay fully local, point at a private server, or adopt a hosted endpoint later without rewriting their training or inference loops.</p>
+      </div>
+      <div class="grid">
+        <div class="card">
+          <div class="kicker">Mode 1</div>
+          <h3>Local artifact</h3>
+          <p>Load `./integrity.json` and score in-process. Best for notebooks, air-gapped experiments, and teams that want zero service footprint.</p>
+        </div>
+        <div class="card">
+          <div class="kicker">Mode 2</div>
+          <h3>Hosted cloud</h3>
+          <p>Point the SDK at a hosted endpoint and keep centralized artifacts, status, and scoring history while still extracting features locally.</p>
+        </div>
+        <div class="card">
+          <div class="kicker">Mode 3</div>
+          <h3>Self-hosted</h3>
+          <p>Run `signai-server` inside a VPC or on a single node with file or SQLite storage. The SDK behavior stays the same.</p>
+        </div>
+        <div class="card">
+          <div class="kicker">Mode 4</div>
+          <h3>Air-gapped</h3>
+          <p>Use the same remote contract against a private internal host with no internet connectivity and no model weight transfer.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="run" class="section">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">How to run</div>
+          <h2>Start local, then graduate to server mode.</h2>
+        </div>
+        <p>The production layer is built around a very small operational loop: calibrate, save, load, score, and optionally upload the artifact to a service.</p>
+      </div>
+      <div class="manual">
+        <div>
+          <h3>SDK quickstart</h3>
+          <ul>
+            <li>Attach a monitor with `monitor.attach(...)`.</li>
+            <li>Calibrate on clean data with `phase="inference"` or `phase="training"`.</li>
+            <li>Save to `integrity.json`.</li>
+            <li>Reload locally or point at `signai-server`.</li>
+            <li>Call `score_inference(x, y)` or `score_training(logits, loss)` in hot paths.</li>
+          </ul>
+        </div>
+        <pre>from signai import monitor
+
+m = monitor.attach(model, num_classes=10, device="cuda")
+m.calibrate(clean_loader, device="cuda", phase="inference", calib_batches=200)
+m.save("./integrity.json")
+
+m = monitor.load(model, artifact="./integrity.json", device="cuda")
+result = m.score_inference(x, y)</pre>
+      </div>
+      <div class="manual">
+        <div>
+          <h3>Server quickstart</h3>
+          <ul>
+            <li>`signai-server serve` starts the standalone production API.</li>
+            <li>`signai serve` is a convenience shortcut.</li>
+            <li>Community uses file storage.</li>
+            <li>Pro adds history, notifier, audit export, and status.</li>
+            <li>Enterprise adds Postgres-oriented deployment.</li>
+          </ul>
+        </div>
+        <pre>pip install "signai[server]"
+signai-server serve \
+  --host 0.0.0.0 \
+  --port 8000 \
+  --storage ./artifacts \
+  --store-backend file \
+  --edition community
+
+docker compose up --build</pre>
+      </div>
+    </section>
+
+    <section id="manual" class="section">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">Customer docs</div>
+          <h2>Everything needed to onboard a customer.</h2>
+        </div>
+        <p>The repository now includes product-facing setup instructions, deployment notes, runtime examples, and troubleshooting guidance for the production layer.</p>
+      </div>
+      <div class="grid">
+        <div class="card">
+          <div class="kicker">README</div>
+          <h3>Repository entrypoint</h3>
+          <p>Updated with install paths, deployment modes, CLI usage, Docker commands, privacy boundaries, and edition guidance.</p>
+        </div>
+        <div class="card">
+          <div class="kicker">Manual</div>
+          <h3>User manual</h3>
+          <p>A customer-facing walkthrough covering local mode, remote mode, calibration, runtime scoring, authentication, troubleshooting, and rollout guidance.</p>
+        </div>
+        <div class="card">
+          <div class="kicker">Deploy</div>
+          <h3>Deployment guide</h3>
+          <p>A focused operations doc for self-hosted, Docker, SQLite, and Postgres-backed setups, including health checks and production recommendations.</p>
+        </div>
+        <div class="card">
+          <div class="kicker">Privacy</div>
+          <h3>Clear boundary</h3>
+          <p>Customer copy now explicitly states that only compact behavioral vectors are transmitted and that raw vectors are discarded after scoring.</p>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div>
+        <h3>signAI production layer</h3>
+        <p>One SDK, one server contract, and a clean path from local artifact mode to hosted or self-hosted deployments.</p>
+      </div>
+      <div>
+        <h3>Docs</h3>
+        <p><a href="README.md">README</a></p>
+        <p><a href="USER_MANUAL.md">User manual</a></p>
+        <p><a href="DEPLOY.md">Deployment guide</a></p>
+      </div>
+      <div>
+        <h3>CLI</h3>
+        <p><code>signai serve</code></p>
+        <p><code>signai-server serve</code></p>
+        <p><code>docker compose up --build</code></p>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>
