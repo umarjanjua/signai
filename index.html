@@ -232,6 +232,53 @@
       gap: 18px;
     }
     .footer a { color: var(--accent-dark); text-decoration: none; }
+    /* ── Pricing ─────────────────────────────────────────────── */
+    .plan {
+      background: rgba(255, 253, 247, 0.82);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      box-shadow: 0 12px 40px rgba(87, 61, 26, 0.07);
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+    }
+    .plan.featured {
+      border-color: var(--accent);
+      box-shadow: 0 12px 40px rgba(173, 79, 23, 0.14);
+    }
+    .plan-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: var(--accent);
+      color: #fff7ef;
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+      align-self: flex-start;
+    }
+    .plan-name { font-family: var(--mono); font-size: 12px; text-transform: uppercase; color: var(--accent-dark); letter-spacing: 0.04em; margin-bottom: 6px; }
+    .plan h3 { font-size: 26px; margin-bottom: 6px; }
+    .plan-tagline { color: var(--muted); font-size: 15px; margin: 0 0 22px; line-height: 1.5; }
+    .price-row { display: flex; align-items: baseline; gap: 4px; margin-bottom: 4px; }
+    .price-amount { font-family: var(--mono); font-size: 42px; font-weight: 600; letter-spacing: -0.03em; }
+    .price-unit { font-family: var(--mono); font-size: 14px; color: var(--muted); }
+    .price-note { font-size: 13px; color: var(--muted); margin: 0 0 22px; }
+    .plan-divider { border: none; border-top: 1px solid var(--line); margin: 0 0 18px; }
+    .plan-features { list-style: none; padding: 0; margin: 0 0 22px; display: flex; flex-direction: column; gap: 8px; }
+    .plan-features li { font-size: 15px; color: var(--ink); display: flex; align-items: flex-start; gap: 8px; }
+    .plan-features li::before { content: "\2713"; color: var(--accent); font-family: var(--mono); font-weight: 600; flex-shrink: 0; }
+    .duration-table { background: var(--soft); border-radius: 12px; padding: 12px 16px; margin-bottom: 22px; }
+    .duration-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; font-size: 14px; }
+    .duration-row + .duration-row { border-top: 1px solid var(--line); }
+    .duration-label { color: var(--ink); font-family: var(--mono); }
+    .duration-price { font-family: var(--mono); color: var(--ink); }
+    .duration-save { font-size: 12px; color: var(--accent-dark); margin-left: 6px; }
+    .plan .btn { width: 100%; text-align: center; margin-top: auto; }
+    /* ── End pricing ──────────────────────────────────────────── */
     .invite {
       margin-top: 18px;
       padding: 36px;
@@ -275,6 +322,7 @@
       <div class="nav-links">
         <a href="#threats">Threats</a>
         <a href="#modes">Modes</a>
+        <a href="#pricing">Pricing</a>
         <a href="#run">Quick start</a>
         <a href="#manual">Docs</a>
         <a href="https://github.com/umarjanjua/signai" target="_blank" rel="noreferrer">GitHub</a>
@@ -289,9 +337,8 @@
         <p>signAI monitors behavioral integrity continuously &mdash; detecting backdoor attacks, poisoned training updates, supply chain tampering, and inference drift before they cause harm.</p>
         <div class="privacy-pill">&#128274; Your weights never leave your machine</div>
         <div class="actions">
-          <a class="btn primary" href="mailto:umarjanjua@live.com?subject=signAI%20inquiry">Get in touch</a>
+          <a class="btn primary" href="#pricing">Early access &rarr;</a>
           <a class="btn secondary" href="USER_MANUAL.md">User manual</a>
-          <a class="btn secondary" href="DEPLOY.md">Deploy guide</a>
           <a class="btn secondary" href="https://github.com/umarjanjua/signai" target="_blank" rel="noreferrer">GitHub</a>
         </div>
       </div>
@@ -581,24 +628,107 @@ for x, y in train_loader:
       </div>
     </section>
 
-    <!-- CONTACT -->
-    <section class="section">
-      <div class="invite">
-        <div class="eyebrow">Get in touch</div>
-        <h2>Evaluating signAI for your team?</h2>
-        <p>We work directly with teams to integrate signAI into their ML pipeline. Whether you are monitoring a production classifier, auditing a vendor-supplied model, or building a compliance case for your CISO &mdash; email us with a bit of context and we will help you get started.</p>
-        <div class="invite-template">To: umarjanjua@live.com
-Subject: signAI inquiry
-
-Team / company:
-What you are monitoring (model type, framework, use case):
-Deployment preference: local / self-hosted / air-gapped
-What prompted the evaluation:</div>
-        <div class="actions">
-          <a class="btn primary" href="mailto:umarjanjua@live.com?subject=signAI%20inquiry">Email us</a>
-          <a class="btn secondary" href="USER_MANUAL.md">Read the manual first</a>
-          <a class="btn secondary" href="https://github.com/umarjanjua/signai" target="_blank" rel="noreferrer">View GitHub</a>
+    <!-- PRICING -->
+    <section id="pricing" class="section">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">Early access</div>
+          <h2>Selective access, reviewed individually.</h2>
         </div>
+        <p>We review every application before granting access. signAI is a fit for ML teams running production models where behavioral integrity is a real requirement.</p>
+      </div>
+
+      <div class="grid-2">
+
+        <!-- Individual -->
+        <div class="plan">
+          <div class="plan-name">Individual</div>
+          <h3>One seat, full stack.</h3>
+          <p class="plan-tagline">All three detectors, local and server deployment, 30-day scoring history.</p>
+          <div class="price-row">
+            <span class="price-amount">$79</span>
+            <span class="price-unit">/month</span>
+          </div>
+          <p class="price-note">Save up to 37% on longer durations.</p>
+          <hr class="plan-divider">
+          <ul class="plan-features">
+            <li>1 seat</li>
+            <li>v1, nn, and assoc detectors</li>
+            <li>30-day scoring history</li>
+            <li>Alerts, audit export, all server features</li>
+            <li>Local artifact + server deployment modes</li>
+          </ul>
+          <div class="duration-table">
+            <div class="duration-row">
+              <span class="duration-label">1 month</span>
+              <span class="duration-price">$79</span>
+            </div>
+            <div class="duration-row">
+              <span class="duration-label">3 months</span>
+              <span class="duration-price">$199 <span class="duration-save">save $38</span></span>
+            </div>
+            <div class="duration-row">
+              <span class="duration-label">6 months</span>
+              <span class="duration-price">$349 <span class="duration-save">save $125</span></span>
+            </div>
+            <div class="duration-row">
+              <span class="duration-label">12 months</span>
+              <span class="duration-price">$599 <span class="duration-save">save $349</span></span>
+            </div>
+          </div>
+          <a class="btn secondary"
+             href="mailto:umarjanjua@live.com?subject=signAI%20early%20access%20%E2%80%94%20Individual&body=Hi%2C%0A%0AI%27d%20like%20to%20apply%20for%20signAI%20early%20access%20(Individual%20plan).%0A%0AUse%20case%3A%20%5Bdescribe%20your%20model%20and%20environment%5D%0ATeam%20size%3A%20%5Bnumber%5D%0APreferred%20duration%3A%20%5B1%20%2F%203%20%2F%206%20%2F%2012%20months%5D%0A%0AThanks">
+            Apply for access
+          </a>
+        </div>
+
+        <!-- Team -->
+        <div class="plan featured">
+          <div class="plan-badge">Most requested</div>
+          <div class="plan-name">Team</div>
+          <h3>Up to five seats.</h3>
+          <p class="plan-tagline">Full history retention, shared artifact store, and per-seat audit trails across your team.</p>
+          <div class="price-row">
+            <span class="price-amount">$199</span>
+            <span class="price-unit">/month</span>
+          </div>
+          <p class="price-note">Save up to 37% on longer durations.</p>
+          <hr class="plan-divider">
+          <ul class="plan-features">
+            <li>Up to 5 seats</li>
+            <li>v1, nn, and assoc detectors</li>
+            <li>365-day scoring history</li>
+            <li>Alerts, audit export, all server features</li>
+            <li>Local artifact + server deployment modes</li>
+          </ul>
+          <div class="duration-table">
+            <div class="duration-row">
+              <span class="duration-label">1 month</span>
+              <span class="duration-price">$199</span>
+            </div>
+            <div class="duration-row">
+              <span class="duration-label">3 months</span>
+              <span class="duration-price">$499 <span class="duration-save">save $98</span></span>
+            </div>
+            <div class="duration-row">
+              <span class="duration-label">6 months</span>
+              <span class="duration-price">$899 <span class="duration-save">save $295</span></span>
+            </div>
+            <div class="duration-row">
+              <span class="duration-label">12 months</span>
+              <span class="duration-price">$1,499 <span class="duration-save">save $889</span></span>
+            </div>
+          </div>
+          <a class="btn primary"
+             href="mailto:umarjanjua@live.com?subject=signAI%20early%20access%20%E2%80%94%20Team&body=Hi%2C%0A%0AI%27d%20like%20to%20apply%20for%20signAI%20early%20access%20(Team%20plan).%0A%0AUse%20case%3A%20%5Bdescribe%20your%20model%20and%20environment%5D%0ATeam%20size%3A%20%5Bnumber%5D%0APreferred%20duration%3A%20%5B1%20%2F%203%20%2F%206%20%2F%2012%20months%5D%0A%0AThanks">
+            Apply for access
+          </a>
+        </div>
+
+      </div>
+
+      <div class="invite" style="margin-top:18px;">
+        <p style="margin:0; font-size:16px; color:var(--muted);"><strong style="color:var(--ink);">How it works:</strong> Send an application email describing your use case. We review it within one business day and reply with a Stripe payment link for your chosen plan and duration. Once payment clears, your license key is delivered automatically.</p>
       </div>
     </section>
 
@@ -641,7 +771,7 @@ What prompted the evaluation:</div>
     <footer class="footer">
       <div>
         <h3>signAI</h3>
-        <p>Behavioral integrity monitoring for production ML. Free to use. Enterprise software license and support available.</p>
+        <p>Behavioral integrity monitoring for production ML. Early access available for individual and team plans.</p>
         <p style="margin-top:10px;"><a href="mailto:umarjanjua@live.com">umarjanjua@live.com</a></p>
       </div>
       <div>
@@ -653,9 +783,9 @@ What prompted the evaluation:</div>
       </div>
       <div>
         <h3>Get started</h3>
-        <p>pip install signai</p>
-        <p>Read the manual</p>
-        <p>Email for enterprise support</p>
+        <p><code>pip install signai</code></p>
+        <p><a href="#pricing">Early access &amp; pricing</a></p>
+        <p><a href="mailto:umarjanjua@live.com">umarjanjua@live.com</a></p>
       </div>
     </footer>
   </div>
