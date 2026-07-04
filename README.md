@@ -19,14 +19,6 @@ signAI monitors a model's behavioral fingerprint rather than its accuracy. It ca
 
 Detection is based on a conditional behavioral model (CBM): for each operating state S, signAI learns the expected behavioral response Z and flags deviations.
 
-## What is in this repo
-
-- `signai/core/`: research and scoring core
-- `signai/core/extractors/`: S/Z feature extractors for classifiers, LLMs, and custom models
-- `signai/core/detectors/`: detector registry (Mahalanobis, neural, association)
-- `signai/client/`: production SDK
-- `signai_server/`: standalone REST server for hosted and self-hosted scoring
-
 ## Install
 
 SDK only, local mode:
@@ -45,14 +37,6 @@ SDK plus server plus Postgres support:
 
 ```bash
 pip install "signai[server,postgres]"
-```
-
-For local development in this repo:
-
-```bash
-python -m venv .venv
-.venv\Scripts\activate
-pip install -e ".[server]"
 ```
 
 ## Quick Start
@@ -377,17 +361,17 @@ signAI is built so that privacy is enforced structurally:
 - User manual: [USER_MANUAL.md](USER_MANUAL.md)
 - Deployment guide: [DEPLOY.md](DEPLOY.md)
 - Changelog: [CHANGELOG.md](CHANGELOG.md)
-- Release checklist: [RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md)
-- Internal product doc (benchmarks, attack taxonomy, detector selection, strategy, roadmap): [PRODUCT.md](PRODUCT.md)
-
-## Development Notes
-
-Run the targeted test suite:
-
-```bash
-python -m pytest tests\test_imports.py tests\test_local_backend.py tests\test_monitor.py tests\test_server.py
-```
 
 ## License
 
-AGPL-3.0 for open-source use. Commercial licensing available for closed-source distribution.
+Commercial license required for production use. A 3-day trial is included on fresh installs — no purchase needed to evaluate.
+
+Run `signai status` to check your current license state.
+
+## Early Access
+
+signAI is currently in selective early access. Applications are reviewed individually.
+
+**[Apply for access and see pricing →](https://umarjanjua.github.io/signai/#pricing)**
+
+Or email `umarjanjua@live.com` with your use case, team size, and preferred deployment mode.
