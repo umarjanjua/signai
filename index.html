@@ -3,10 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>signAI – Know your production model is still the model you validated</title>
+  <title>signAI - Behavioral Integrity Monitoring</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@600;700;800&family=DM+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #f3efe5;
@@ -18,7 +19,8 @@
       --accent-dark: #7e3910;
       --soft: #efe5d2;
       --mono: "IBM Plex Mono", monospace;
-      --sans: "Source Sans 3", sans-serif;
+      --sans: "DM Sans", system-ui, sans-serif;
+      --display: "Epilogue", system-ui, sans-serif;
     }
     * { box-sizing: border-box; }
     body {
@@ -72,7 +74,9 @@
       border-radius: 24px;
       box-shadow: 0 12px 40px rgba(87, 61, 26, 0.07);
     }
-    .hero-copy { padding: 40px; }
+    .hero-copy {
+      padding: 40px;
+    }
     .eyebrow {
       display: inline-block;
       margin-bottom: 20px;
@@ -85,37 +89,28 @@
       letter-spacing: 0.04em;
       text-transform: uppercase;
     }
-    h1, h2, h3 { margin: 0; line-height: 1.05; }
+    h1, h2, h3 {
+      margin: 0;
+      line-height: 1.05;
+      font-family: var(--display);
+    }
     h1 {
-      font-size: clamp(36px, 5.5vw, 62px);
+      font-size: clamp(40px, 7vw, 72px);
       letter-spacing: -0.03em;
       max-width: 760px;
     }
     .hero-copy p {
       margin: 18px 0 0;
       max-width: 640px;
-      font-size: 20px;
-      line-height: 1.5;
+      font-size: 21px;
+      line-height: 1.45;
       color: var(--muted);
-    }
-    .privacy-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: 20px;
-      padding: 10px 16px;
-      background: #f0ebe0;
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      font-family: var(--mono);
-      font-size: 12px;
-      color: var(--accent-dark);
     }
     .actions {
       display: flex;
       flex-wrap: wrap;
       gap: 14px;
-      margin-top: 24px;
+      margin-top: 28px;
     }
     .btn {
       display: inline-block;
@@ -131,7 +126,10 @@
       color: #fff7ef;
       border-color: var(--accent);
     }
-    .btn.secondary { background: transparent; color: var(--ink); }
+    .btn.secondary {
+      background: transparent;
+      color: var(--ink);
+    }
     .hero-panel {
       padding: 24px;
       display: flex;
@@ -149,11 +147,12 @@
       overflow: auto;
       min-height: 320px;
     }
-    .terminal .dim  { color: #c9a57c; }
-    .terminal .ok   { color: #88e19d; }
+    .terminal .dim { color: #c9a57c; }
+    .terminal .ok { color: #88e19d; }
     .terminal .warn { color: #ffb67f; }
-    .terminal .cmt  { color: #8a7060; }
-    .section { padding-top: 28px; }
+    .section {
+      padding-top: 28px;
+    }
     .section-head {
       display: flex;
       justify-content: space-between;
@@ -167,10 +166,14 @@
       color: var(--muted);
       font-size: 18px;
     }
-    .grid   { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; }
-    .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
-    .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
-    .card { padding: 24px; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 18px;
+    }
+    .card {
+      padding: 24px;
+    }
     .kicker {
       color: var(--accent-dark);
       font-family: var(--mono);
@@ -183,28 +186,6 @@
       line-height: 1.55;
       font-size: 16px;
     }
-    .card h3 { margin-bottom: 8px; }
-    .auroc-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-top: 10px;
-      font-family: var(--mono);
-      font-size: 13px;
-    }
-    .auroc-bar-wrap {
-      flex: 1;
-      height: 6px;
-      background: var(--soft);
-      border-radius: 999px;
-      overflow: hidden;
-    }
-    .auroc-bar {
-      height: 100%;
-      background: var(--accent);
-      border-radius: 999px;
-    }
-    .auroc-val { color: var(--accent-dark); min-width: 36px; text-align: right; }
     .manual {
       margin-top: 18px;
       padding: 30px;
@@ -223,7 +204,10 @@
       line-height: 1.75;
       font-family: var(--mono);
     }
-    ul { padding-left: 20px; margin: 14px 0 0; }
+    ul {
+      padding-left: 20px;
+      margin: 14px 0 0;
+    }
     .footer {
       margin-top: 28px;
       padding: 28px;
@@ -231,9 +215,17 @@
       grid-template-columns: 1.2fr 0.8fr 0.8fr;
       gap: 18px;
     }
-    .footer a { color: var(--accent-dark); text-decoration: none; }
-    /* ── Pricing ─────────────────────────────────────────────── */
-    .plan {
+    .footer a {
+      color: var(--accent-dark);
+      text-decoration: none;
+    }
+    /* Pricing */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+    .plan-card {
       background: rgba(255, 253, 247, 0.82);
       backdrop-filter: blur(8px);
       border: 1px solid var(--line);
@@ -242,76 +234,103 @@
       padding: 32px;
       display: flex;
       flex-direction: column;
+      gap: 24px;
     }
-    .plan.featured {
+    .plan-card--featured {
       border-color: var(--accent);
       box-shadow: 0 12px 40px rgba(173, 79, 23, 0.14);
     }
-    .plan-badge {
-      display: inline-block;
-      padding: 4px 10px;
-      border-radius: 999px;
-      background: var(--accent);
-      color: #fff7ef;
-      font-family: var(--mono);
-      font-size: 11px;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      margin-bottom: 14px;
-      align-self: flex-start;
+    .plan-price-line {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      margin-top: 10px;
     }
-    .plan-name { font-family: var(--mono); font-size: 12px; text-transform: uppercase; color: var(--accent-dark); letter-spacing: 0.04em; margin-bottom: 6px; }
-    .plan h3 { font-size: 26px; margin-bottom: 6px; }
-    .plan-tagline { color: var(--muted); font-size: 15px; margin: 0 0 22px; line-height: 1.5; }
-    .price-row { display: flex; align-items: baseline; gap: 4px; margin-bottom: 4px; }
-    .price-amount { font-family: var(--mono); font-size: 42px; font-weight: 600; letter-spacing: -0.03em; }
-    .price-unit { font-family: var(--mono); font-size: 14px; color: var(--muted); }
-    .price-note { font-size: 13px; color: var(--muted); margin: 0 0 22px; }
-    .plan-divider { border: none; border-top: 1px solid var(--line); margin: 0 0 18px; }
-    .plan-features { list-style: none; padding: 0; margin: 0 0 22px; display: flex; flex-direction: column; gap: 8px; }
-    .plan-features li { font-size: 15px; color: var(--ink); display: flex; align-items: flex-start; gap: 8px; }
-    .plan-features li::before { content: "\2713"; color: var(--accent); font-family: var(--mono); font-weight: 600; flex-shrink: 0; }
-    .duration-table { background: var(--soft); border-radius: 12px; padding: 12px 16px; margin-bottom: 22px; }
-    .duration-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; font-size: 14px; }
-    .duration-row + .duration-row { border-top: 1px solid var(--line); }
-    .duration-label { color: var(--ink); font-family: var(--mono); }
-    .duration-price { font-family: var(--mono); color: var(--ink); }
-    .duration-save { font-size: 12px; color: var(--accent-dark); margin-left: 6px; }
-    .plan .btn { width: 100%; text-align: center; margin-top: auto; }
-    /* ── End pricing ──────────────────────────────────────────── */
-    .invite {
-      margin-top: 18px;
-      padding: 36px;
-      background: linear-gradient(135deg, #f0dcc0 0%, #fff7ea 100%);
-      border: 1px solid var(--line);
-      border-radius: 20px;
-      box-shadow: 0 10px 32px rgba(87, 61, 26, 0.08);
+    .plan-price {
+      font-size: clamp(36px, 5vw, 52px);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1;
     }
-    .invite p {
-      margin: 12px 0 0;
-      color: var(--muted);
-      font-size: 18px;
-      line-height: 1.55;
-      max-width: 760px;
-    }
-    .invite-template {
-      margin-top: 18px;
-      background: #241d17;
-      color: #f7e7d0;
-      border-radius: 18px;
-      padding: 18px;
+    .plan-per {
       font-family: var(--mono);
       font-size: 13px;
-      line-height: 1.8;
-      overflow: auto;
+      color: var(--muted);
+    }
+    .plan-tagline {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.5;
+    }
+    .plan-features {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      flex: 1;
+    }
+    .plan-features li {
+      font-size: 15px;
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      line-height: 1.4;
+    }
+    .plan-features li::before {
+      content: "→";
+      color: var(--accent);
+      font-family: var(--mono);
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+    .plan-buy {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .plan-buy .btn {
+      display: block;
+      text-align: center;
+    }
+    .plan-save {
+      font-size: 11px;
+      color: var(--muted);
+      font-family: var(--mono);
+      opacity: 0.8;
+    }
+    .pricing-note {
+      text-align: center;
+      margin-top: 16px;
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .pricing-note a {
+      color: var(--accent-dark);
+      text-decoration: none;
     }
     @media (max-width: 940px) {
-      .hero, .manual, .footer, .grid, .grid-3, .grid-2 { grid-template-columns: 1fr; }
-      .section-head { flex-direction: column; align-items: start; }
+      .hero, .manual, .footer, .grid, .pricing-grid {
+        grid-template-columns: 1fr;
+      }
+      .section-head {
+        flex-direction: column;
+        align-items: start;
+      }
     }
     @media (max-width: 640px) {
-      .nav { flex-direction: column; align-items: start; gap: 10px; }
-      .hero-copy, .hero-panel, .card, .manual, .footer { border-radius: 18px; }
+      .nav {
+        flex-direction: column;
+        align-items: start;
+        gap: 10px;
+      }
+      .hero-copy, .hero-panel, .card, .manual, .footer, .plan-card {
+        border-radius: 18px;
+      }
     }
   </style>
 </head>
@@ -320,472 +339,253 @@
     <nav class="nav">
       <a class="brand" href="#">sign<span>AI</span></a>
       <div class="nav-links">
-        <a href="#threats">Threats</a>
         <a href="#modes">Modes</a>
+        <a href="#run">Run</a>
         <a href="#pricing">Pricing</a>
-        <a href="#run">Quick start</a>
-        <a href="#manual">Docs</a>
-        <a href="https://github.com/umarjanjua/signai" target="_blank" rel="noreferrer">GitHub</a>
+        <a href="#manual">Manual</a>
+        <a href="README.md">README</a>
       </div>
     </nav>
 
-    <!-- HERO -->
     <section class="hero">
       <div class="hero-copy">
-        <div class="eyebrow">v0.4.0 &mdash; now available</div>
-        <h1>Know your production model is still the model you validated.</h1>
-        <p>signAI monitors behavioral integrity continuously &mdash; detecting backdoor attacks, poisoned training updates, supply chain tampering, and inference drift before they cause harm.</p>
-        <div class="privacy-pill">&#128274; Your weights never leave your machine</div>
+        <div class="eyebrow">Production layer v0.4.12</div>
+        <h1>Behavioral integrity monitoring you can actually ship.</h1>
+        <p>Attach a monitor to a PyTorch model, calibrate on clean data, then score inference batches and training updates locally or through a managed server. One SDK, four deployment modes, and a privacy model built into the architecture.</p>
         <div class="actions">
-          <a class="btn primary" href="#pricing">Early access &rarr;</a>
-          <a class="btn secondary" href="USER_MANUAL.md">User manual</a>
-          <a class="btn secondary" href="https://github.com/umarjanjua/signai" target="_blank" rel="noreferrer">GitHub</a>
+        <a class="btn primary" href="#pricing">Early access →</a>
+        <a class="btn secondary" href="USER_MANUAL.md">User manual</a>
+        <a class="btn secondary" href="README.md">README</a>
         </div>
       </div>
       <div class="hero-panel">
         <div class="terminal">
-<span class="dim">$</span> pip install signai
-
-<span class="cmt"># Attach to any model. Calibrate once.</span>
-m = monitor.attach(model, num_classes=10)
-m.calibrate(clean_loader, device="cpu",
-            phase="inference")
-m.save("./integrity.json")
-
-<span class="cmt"># Score every batch. Catch tampering.</span>
-m = monitor.load(model, artifact="./integrity.json")
-result = m.score_inference(x, y)
-<span class="ok">flagged=False</span>  score=3.21  tau=17.60
-
-<span class="cmt"># Anomalous training update detected.</span>
-result = m.score_training(logits, loss)
-<span class="warn">flagged=True</span>   score=29.44  tau=15.03
+<div><span class="dim">$</span> pip install "signai[server]"</div>
+<div><span class="dim">$</span> signai-server serve --host 0.0.0.0 --port 8000</div>
+<div><span class="dim">-></span> signAI v0.3.0 (community)</div>
+<div><span class="dim">-></span> docs: http://0.0.0.0:8000/docs</div>
+<div>&nbsp;</div>
+<div><span class="dim">$</span> python app.py</div>
+<div>m = monitor.load(model, endpoint="http://localhost:8000", monitor_id="resnet-prod")</div>
+<div>result = m.score_inference(x, y)</div>
+<div><span class="ok">flagged=False</span> score=3.21 tau=17.60</div>
+<div>result = m.score_training(logits, loss)</div>
+<div><span class="warn">flagged=True</span> score=29.44 tau=15.03</div>
         </div>
       </div>
     </section>
 
-    <!-- THREATS -->
-    <section id="threats" class="section">
-      <div class="section-head">
-        <div>
-          <div class="eyebrow">What we detect</div>
-          <h2>The threats your accuracy metric misses.</h2>
-        </div>
-        <p>A model can maintain high accuracy while behaving maliciously on specific inputs, leaking information, or drifting from its validated baseline. signAI catches this.</p>
-      </div>
-      <div class="grid">
-        <div class="card">
-          <div class="kicker">Inference</div>
-          <h3>Backdoor attacks</h3>
-          <p>A model that was clean when validated but now responds to a hidden trigger &mdash; inserted by a third-party trainer or via supply chain compromise.</p>
-        </div>
-        <div class="card">
-          <div class="kicker">Training</div>
-          <h3>Gradient poisoning</h3>
-          <p>Malicious training updates that subtly shift model behavior over time. Detected by monitoring the geometry of parameter updates during fine-tuning.</p>
-        </div>
-        <div class="card">
-          <div class="kicker">Supply chain</div>
-          <h3>Model tampering</h3>
-          <p>A model delivered by a vendor or downloaded from a hub that does not behave the way you validated it. signAI flags the drift immediately on first calibration.</p>
-        </div>
-        <div class="card">
-          <div class="kicker">Drift</div>
-          <h3>Inference shift</h3>
-          <p>Gradual or sudden change in the model's activation and output distribution &mdash; caused by redeployment, quantisation, or serving infrastructure changes.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- BENCHMARKS -->
-    <section class="section">
-      <div class="section-head">
-        <div>
-          <div class="eyebrow">Benchmark results</div>
-          <h2>Three detectors. Measured on real attacks.</h2>
-        </div>
-        <p>All detectors calibrated at 5% FPR. Results on ResNet-18 / CIFAR-10 with PGD, OOD, model extraction, and backdoor attacks.</p>
-      </div>
-      <div class="grid-3">
-        <div class="card">
-          <div class="kicker">v1 &middot; Mahalanobis</div>
-          <h3>Fast. No GPU required.</h3>
-          <p>General purpose. Best starting point for any model.</p>
-          <div class="auroc-row">Backdoor <div class="auroc-bar-wrap"><div class="auroc-bar" style="width:60%"></div></div><span class="auroc-val">0.60</span></div>
-          <div class="auroc-row">PGD / OOD <div class="auroc-bar-wrap"><div class="auroc-bar" style="width:100%"></div></div><span class="auroc-val">1.00</span></div>
-          <div class="auroc-row">Extraction <div class="auroc-bar-wrap"><div class="auroc-bar" style="width:100%"></div></div><span class="auroc-val">1.00</span></div>
-        </div>
-        <div class="card">
-          <div class="kicker">nn &middot; Neural conditional</div>
-          <h3>Higher accuracy on complex geometry.</h3>
-          <p>Better discrimination on large activation spaces.</p>
-          <div class="auroc-row">Backdoor <div class="auroc-bar-wrap"><div class="auroc-bar" style="width:65%"></div></div><span class="auroc-val">0.65</span></div>
-          <div class="auroc-row">PGD / OOD <div class="auroc-bar-wrap"><div class="auroc-bar" style="width:100%"></div></div><span class="auroc-val">1.00</span></div>
-          <div class="auroc-row">Extraction <div class="auroc-bar-wrap"><div class="auroc-bar" style="width:100%"></div></div><span class="auroc-val">1.00</span></div>
-        </div>
-        <div class="card">
-          <div class="kicker">assoc &middot; Blockwise association</div>
-          <h3>Best on high-dimensional spaces.</h3>
-          <p>Captures correlation structure across activation blocks.</p>
-          <div class="auroc-row">Backdoor <div class="auroc-bar-wrap"><div class="auroc-bar" style="width:70%"></div></div><span class="auroc-val">0.70</span></div>
-          <div class="auroc-row">PGD / OOD <div class="auroc-bar-wrap"><div class="auroc-bar" style="width:100%"></div></div><span class="auroc-val">1.00</span></div>
-          <div class="auroc-row">Extraction <div class="auroc-bar-wrap"><div class="auroc-bar" style="width:100%"></div></div><span class="auroc-val">1.00</span></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- WHO IT IS FOR -->
-    <section class="section">
-      <div class="section-head">
-        <div>
-          <div class="eyebrow">Who it is for</div>
-          <h2>Anyone accountable when a model misbehaves.</h2>
-        </div>
-        <p>signAI is built for teams where a model failure has real financial, safety, or reputational consequences.</p>
-      </div>
-      <div class="grid">
-        <div class="card">
-          <div class="kicker">Fintech</div>
-          <h3>Credit &amp; fraud models</h3>
-          <p>Know that the model making credit decisions today matches what your risk team validated last quarter &mdash; whether it's a deep network or a gradient boosting ensemble.</p>
-        </div>
-        <div class="card">
-          <div class="kicker">Healthcare</div>
-          <h3>Clinical decision support</h3>
-          <p>Detect drift or tampering in models used for diagnosis or risk stratification before it reaches a clinician.</p>
-        </div>
-        <div class="card">
-          <div class="kicker">MLOps teams</div>
-          <h3>Production monitoring</h3>
-          <p>A single monitor that catches behavioral anomalies across inference and training &mdash; without exposing model weights or raw inputs to a third-party service.</p>
-        </div>
-        <div class="card">
-          <div class="kicker">AI security</div>
-          <h3>Supply chain integrity</h3>
-          <p>Verify that a model received from a vendor, fine-tuned by a contractor, or downloaded from a hub behaves exactly as the clean reference you validated.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- PRIVACY -->
-    <section class="section">
-      <div class="manual" style="margin-top:0;">
-        <div>
-          <div class="eyebrow">Privacy by design</div>
-          <h2>Your weights never leave your machine.</h2>
-          <p style="margin-top:14px; color:var(--muted); font-size:17px; line-height:1.6;">signAI is built so privacy is enforced structurally, not by policy.</p>
-          <ul>
-            <li>Feature extraction runs entirely on your machine</li>
-            <li>Only compact <code>s</code> and <code>z</code> float vectors are transmitted &mdash; typically under 100 bytes per score call</li>
-            <li>Raw vectors are discarded immediately after scoring</li>
-            <li>Only <code>{timestamp, score, flagged, phase}</code> is stored in history</li>
-            <li>Model weights, raw inputs, and gradients never move</li>
-          </ul>
-          <p style="margin-top:14px; color:var(--muted); font-size:17px; line-height:1.6;">You can run fully local with no server at all. The server mode adds history, alerts, and audit export &mdash; but never sees your model.</p>
-        </div>
-        <div style="display:flex; flex-direction:column; gap:14px; justify-content:center;">
-          <div class="card" style="margin:0;">
-            <div class="kicker">What leaves your machine</div>
-            <h3>Only behavioral vectors</h3>
-            <p>Two small float arrays &mdash; dimensionality ~10&ndash;50 &mdash; summarising how your model responded. Not the model, not the inputs.</p>
-          </div>
-          <div class="card" style="margin:0;">
-            <div class="kicker">What stays with you</div>
-            <h3>Everything else</h3>
-            <p>Model weights, training data, raw inputs, gradients, predictions. All remain in your environment, always.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- MODEL SUPPORT -->
-    <section class="section">
-      <div class="section-head">
-        <div>
-          <div class="eyebrow">Model support</div>
-          <h2>Works with the models you actually run.</h2>
-        </div>
-        <p>signAI's extractor plugin system is designed to extend to any model type. Current and roadmap support:</p>
-      </div>
-      <div class="grid">
-        <div class="card">
-          <div class="kicker">Available now</div>
-          <h3>PyTorch classifiers</h3>
-          <p>CNNs, ViTs, HuggingFace classification models. Auto-selected via <code>monitor.attach()</code>.</p>
-        </div>
-        <div class="card">
-          <div class="kicker">Available now</div>
-          <h3>Large language models</h3>
-          <p>HuggingFace generative models and any model over 200M parameters. Constant memory regardless of model size.</p>
-        </div>
-        <div class="card">
-          <div class="kicker">Roadmap</div>
-          <h3>Gradient boosting</h3>
-          <p>XGBoost, LightGBM, CatBoost, sklearn ensembles. Highest priority &mdash; fintech teams run these for credit and fraud.</p>
-        </div>
-        <div class="card">
-          <div class="kicker">Roadmap</div>
-          <h3>TensorFlow, JAX, ONNX</h3>
-          <p>Framework extensions via the same extractor plugin interface. TF2/Keras first, then JAX/Flax, then ONNX inference-only.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- DEPLOYMENT MODES -->
     <section id="modes" class="section">
       <div class="section-head">
         <div>
           <div class="eyebrow">Deployment modes</div>
           <h2>Same scoring API, different routing.</h2>
         </div>
-        <p>Start local. Graduate to a server when you need history, alerts, and multi-model dashboards. Your code doesn't change.</p>
+        <p>Customers can stay fully local, point at a private server, or adopt a hosted endpoint later without rewriting their training or inference loops.</p>
       </div>
       <div class="grid">
         <div class="card">
           <div class="kicker">Mode 1</div>
           <h3>Local artifact</h3>
-          <p>Load <code>integrity.json</code> and score in-process. No server, no network. Best for notebooks and air-gapped environments.</p>
+          <p>Load `./integrity.json` and score in-process. Best for notebooks, air-gapped experiments, and teams that want zero service footprint.</p>
         </div>
         <div class="card">
           <div class="kicker">Mode 2</div>
-          <h3>Self-hosted server</h3>
-          <p>Run <code>signai-server</code> inside your VPC. File or Postgres-backed. Full history, alerts, and audit export.</p>
+          <h3>Hosted cloud</h3>
+          <p>Point the SDK at a hosted endpoint and keep centralized artifacts, status, and scoring history while still extracting features locally.</p>
         </div>
         <div class="card">
           <div class="kicker">Mode 3</div>
-          <h3>Air-gapped</h3>
-          <p>Same remote API contract against a private internal host. No internet connectivity required. No model data leaves your network.</p>
+          <h3>Self-hosted</h3>
+          <p>Run `signai-server` inside a VPC or on a single node with file or SQLite storage. The SDK behavior stays the same.</p>
         </div>
         <div class="card">
           <div class="kicker">Mode 4</div>
-          <h3>Hosted cloud</h3>
-          <p>Point the SDK at a managed endpoint. Centralised artifacts and scoring history &mdash; features extracted locally, always.</p>
+          <h3>Air-gapped</h3>
+          <p>Use the same remote contract against a private internal host with no internet connectivity and no model weight transfer.</p>
         </div>
       </div>
     </section>
 
-    <!-- QUICK START -->
     <section id="run" class="section">
       <div class="section-head">
         <div>
-          <div class="eyebrow">Quick start</div>
-          <h2>Three lines to your first integrity score.</h2>
+          <div class="eyebrow">How to run</div>
+          <h2>Start local, then graduate to server mode.</h2>
         </div>
-        <p>Attach, calibrate, save. Then load and score in your inference or training loop.</p>
+        <p>The production layer is built around a very small operational loop: calibrate, save, load, score, and optionally upload the artifact to a service.</p>
       </div>
       <div class="manual">
         <div>
-          <h3>Inference monitoring</h3>
+          <h3>SDK quickstart</h3>
           <ul>
-            <li>Attach a monitor with <code>monitor.attach()</code></li>
-            <li>Calibrate on clean data with <code>phase="inference"</code></li>
-            <li>Save the artifact &mdash; reload anytime</li>
-            <li>Call <code>score_inference(x, y)</code> in your serving loop</li>
-            <li>React to <code>result.flagged</code> however you need</li>
+            <li>Attach a monitor with `monitor.attach(...)`.</li>
+            <li>Calibrate on clean data with `phase="inference"` or `phase="training"`.</li>
+            <li>Save to `integrity.json`.</li>
+            <li>Reload locally or point at `signai-server`.</li>
+            <li>Call `score_inference(x, y)` or `score_training(logits, loss)` in hot paths.</li>
           </ul>
         </div>
         <pre>from signai import monitor
 
-m = monitor.attach(model, num_classes=10)
-m.calibrate(clean_loader, device="cpu",
-            phase="inference")
+m = monitor.attach(model, num_classes=10, device="cuda")
+m.calibrate(clean_loader, device="cuda", phase="inference", calib_batches=200)
 m.save("./integrity.json")
 
-m = monitor.load(model,
-                 artifact="./integrity.json")
-for x, y in test_loader:
-    result = m.score_inference(x, y)
-    if result.flagged:
-        route_to_fallback(x)</pre>
+m = monitor.load(model, artifact="./integrity.json", device="cuda")
+result = m.score_inference(x, y)</pre>
       </div>
       <div class="manual">
         <div>
-          <h3>Training monitoring</h3>
+          <h3>Server quickstart</h3>
           <ul>
-            <li>Calibrate with <code>phase="training"</code> &mdash; pass your optimizer and criterion</li>
-            <li>Score after every <code>optimizer.step()</code></li>
-            <li>Catches gradient poisoning and unexpected parameter drift</li>
-            <li>Works alongside inference monitoring &mdash; same model, different artifact</li>
+            <li>`signai-server serve` starts the standalone production API.</li>
+            <li>`signai serve` is a convenience shortcut.</li>
+            <li>Community uses file storage.</li>
+            <li>Pro adds history, notifier, audit export, and status.</li>
+            <li>Enterprise adds Postgres-oriented deployment.</li>
           </ul>
         </div>
-        <pre>m = monitor.attach(model, num_classes=10)
-m.calibrate(train_loader, device="cpu",
-            phase="training",
-            optimizer=optimizer,
-            criterion=criterion)
-m.save("./integrity_train.json")
+        <pre>pip install "signai[server]"
+signai-server serve \
+  --host 0.0.0.0 \
+  --port 8000 \
+  --storage ./artifacts \
+  --store-backend file \
+  --edition community
 
-m = monitor.load(model,
-                 artifact="./integrity_train.json")
-for x, y in train_loader:
-    logits = model(x)
-    loss = criterion(logits, y)
-    loss.backward()
-    optimizer.step()
-    result = m.score_training(logits, loss)
-    if result.flagged:
-        quarantine_update(result)</pre>
+docker compose up --build</pre>
       </div>
     </section>
 
-    <!-- PRICING -->
     <section id="pricing" class="section">
       <div class="section-head">
         <div>
-          <div class="eyebrow">Early access</div>
-          <h2>Selective access, reviewed individually.</h2>
+          <div class="eyebrow">Pricing</div>
+          <h2>Simple plans. No surprises.</h2>
         </div>
-        <p>We review every application before granting access. signAI is a fit for ML teams running production models where behavioral integrity is a real requirement.</p>
+        <p>Start free. Upgrade when you need nn and assoc detectors, history, and alerts. Enterprise contracts available for air-gapped and compliance deployments.</p>
       </div>
-
-      <div class="grid-2">
-
-        <!-- Individual -->
-        <div class="plan">
-          <div class="plan-name">Individual</div>
-          <h3>One seat, full stack.</h3>
-          <p class="plan-tagline">All three detectors, local and server deployment, 30-day scoring history.</p>
-          <div class="price-row">
-            <span class="price-amount">$79</span>
-            <span class="price-unit">/month</span>
+      <div class="pricing-grid">
+        <div class="plan-card">
+          <div>
+            <div class="kicker">Community</div>
+            <div class="plan-price-line">
+              <span class="plan-price">Free</span>
+            </div>
+            <p class="plan-tagline">No account needed. Start monitoring immediately after install.</p>
           </div>
-          <p class="price-note">Save up to 37% on longer durations.</p>
-          <hr class="plan-divider">
           <ul class="plan-features">
-            <li>1 seat</li>
-            <li>v1, nn, and assoc detectors</li>
-            <li>30-day scoring history</li>
-            <li>Alerts, audit export, all server features</li>
-            <li>Local artifact + server deployment modes</li>
+            <li>v1 detector (Mahalanobis)</li>
+            <li>10 calibrations / month</li>
+            <li>Local + file-backed server mode</li>
+            <li>Community support</li>
           </ul>
-          <div class="duration-table">
-            <div class="duration-row">
-              <span class="duration-label">1 month</span>
-              <span class="duration-price">$79</span>
-            </div>
-            <div class="duration-row">
-              <span class="duration-label">3 months</span>
-              <span class="duration-price">$199 <span class="duration-save">save $38</span></span>
-            </div>
-            <div class="duration-row">
-              <span class="duration-label">6 months</span>
-              <span class="duration-price">$349 <span class="duration-save">save $125</span></span>
-            </div>
-            <div class="duration-row">
-              <span class="duration-label">12 months</span>
-              <span class="duration-price">$599 <span class="duration-save">save $349</span></span>
-            </div>
+          <div class="plan-buy">
+            <a class="btn primary" href="https://github.com/umarjanjua/signai" target="_blank" rel="noopener">Get started free</a>
           </div>
-          <a class="btn secondary"
-             href="mailto:umarjanjua@live.com?subject=signAI%20early%20access%20%E2%80%94%20Individual&body=Hi%2C%0A%0AI%27d%20like%20to%20apply%20for%20signAI%20early%20access%20(Individual%20plan).%0A%0AUse%20case%3A%20%5Bdescribe%20your%20model%20and%20environment%5D%0ATeam%20size%3A%20%5Bnumber%5D%0APreferred%20duration%3A%20%5B1%20%2F%203%20%2F%206%20%2F%2012%20months%5D%0A%0AThanks">
-            Apply for access
-          </a>
         </div>
-
-        <!-- Team -->
-        <div class="plan featured">
-          <div class="plan-badge">Most requested</div>
-          <div class="plan-name">Team</div>
-          <h3>Up to five seats.</h3>
-          <p class="plan-tagline">Full history retention, shared artifact store, and per-seat audit trails across your team.</p>
-          <div class="price-row">
-            <span class="price-amount">$199</span>
-            <span class="price-unit">/month</span>
+        <div class="plan-card plan-card--featured">
+          <div>
+            <div class="kicker">Pro</div>
+            <div class="plan-price-line">
+              <span class="plan-price">$49</span>
+              <span class="plan-per">/month</span>
+            </div>
+            <p class="plan-tagline">All three detectors, 200 calibrations/month, history and alerts.</p>
           </div>
-          <p class="price-note">Save up to 37% on longer durations.</p>
-          <hr class="plan-divider">
           <ul class="plan-features">
-            <li>Up to 5 seats</li>
-            <li>v1, nn, and assoc detectors</li>
-            <li>365-day scoring history</li>
-            <li>Alerts, audit export, all server features</li>
-            <li>Local artifact + server deployment modes</li>
+            <li>All 3 detectors (v1, nn, assoc)</li>
+            <li>200 calibrations / month</li>
+            <li>90-day score history</li>
+            <li>Alerts and audit export</li>
+            <li>Email support</li>
           </ul>
-          <div class="duration-table">
-            <div class="duration-row">
-              <span class="duration-label">1 month</span>
-              <span class="duration-price">$199</span>
-            </div>
-            <div class="duration-row">
-              <span class="duration-label">3 months</span>
-              <span class="duration-price">$499 <span class="duration-save">save $98</span></span>
-            </div>
-            <div class="duration-row">
-              <span class="duration-label">6 months</span>
-              <span class="duration-price">$899 <span class="duration-save">save $295</span></span>
-            </div>
-            <div class="duration-row">
-              <span class="duration-label">12 months</span>
-              <span class="duration-price">$1,499 <span class="duration-save">save $889</span></span>
-            </div>
+          <div class="plan-buy">
+            <a class="btn primary" href="https://buy.stripe.com/test_dRm7sK5M0gIUehA5rK9Ve07" data-stripe-plan="pro" data-stripe-duration="30" target="_blank" rel="noopener">Upgrade to Pro</a>
           </div>
-          <a class="btn primary"
-             href="mailto:umarjanjua@live.com?subject=signAI%20early%20access%20%E2%80%94%20Team&body=Hi%2C%0A%0AI%27d%20like%20to%20apply%20for%20signAI%20early%20access%20(Team%20plan).%0A%0AUse%20case%3A%20%5Bdescribe%20your%20model%20and%20environment%5D%0ATeam%20size%3A%20%5Bnumber%5D%0APreferred%20duration%3A%20%5B1%20%2F%203%20%2F%206%20%2F%2012%20months%5D%0A%0AThanks">
-            Apply for access
-          </a>
         </div>
-
+        <div class="plan-card">
+          <div>
+            <div class="kicker">Enterprise</div>
+            <div class="plan-price-line">
+              <span class="plan-price">Contact us</span>
+            </div>
+            <p class="plan-tagline">Unlimited calibrations, air-gapped deployment, compliance and dedicated support.</p>
+          </div>
+          <ul class="plan-features">
+            <li>Everything in Pro</li>
+            <li>Unlimited calibrations</li>
+            <li>Postgres backend</li>
+            <li>Air-gapped deployment</li>
+            <li>Compliance and audit controls</li>
+            <li>Dedicated support</li>
+          </ul>
+          <div class="plan-buy">
+            <a class="btn primary" href="mailto:umarjanjua@live.com">Contact us</a>
+          </div>
+        </div>
       </div>
-
-      <div class="invite" style="margin-top:18px;">
-        <p style="margin:0; font-size:16px; color:var(--muted);"><strong style="color:var(--ink);">How it works:</strong> Send an application email describing your use case. We review it within one business day and reply with a Stripe payment link for your chosen plan and duration. Once payment clears, your license key is delivered automatically.</p>
-      </div>
+      <p class="pricing-note">
+        License key delivered by email within 1 hour of payment. &nbsp;|&nbsp; All plans include a 3-day free trial of Pro features.
+      </p>
     </section>
 
-    <!-- DOCS -->
     <section id="manual" class="section">
       <div class="section-head">
         <div>
-          <div class="eyebrow">Documentation</div>
-          <h2>Everything needed to evaluate and deploy.</h2>
+          <div class="eyebrow">Customer docs</div>
+          <h2>Everything needed to onboard a customer.</h2>
         </div>
+        <p>The repository now includes product-facing setup instructions, deployment notes, runtime examples, and troubleshooting guidance for the production layer.</p>
       </div>
       <div class="grid">
         <div class="card">
           <div class="kicker">README</div>
-          <h3>Overview</h3>
-          <p>What signAI is, what it detects, the public API, and how to get started in five minutes.</p>
-          <p style="margin-top:12px;"><a href="README.md" style="color:var(--accent-dark); font-family:var(--mono); font-size:13px;">README.md &rarr;</a></p>
+          <h3>Repository entrypoint</h3>
+          <p>Updated with install paths, deployment modes, CLI usage, Docker commands, privacy boundaries, and edition guidance.</p>
         </div>
         <div class="card">
           <div class="kicker">Manual</div>
           <h3>User manual</h3>
-          <p>Full walkthrough &mdash; classifier and LLM quick starts, detector selection, daemon server, custom extractors.</p>
-          <p style="margin-top:12px;"><a href="USER_MANUAL.md" style="color:var(--accent-dark); font-family:var(--mono); font-size:13px;">USER_MANUAL.md &rarr;</a></p>
+          <p>A customer-facing walkthrough covering local mode, remote mode, calibration, runtime scoring, authentication, troubleshooting, and rollout guidance.</p>
         </div>
         <div class="card">
           <div class="kicker">Deploy</div>
           <h3>Deployment guide</h3>
-          <p>Local, self-hosted, Render, HuggingFace Spaces, air-gapped. Upgrade path from previous versions.</p>
-          <p style="margin-top:12px;"><a href="DEPLOY.md" style="color:var(--accent-dark); font-family:var(--mono); font-size:13px;">DEPLOY.md &rarr;</a></p>
+          <p>A focused operations doc for self-hosted, Docker, SQLite, and Postgres-backed setups, including health checks and production recommendations.</p>
+        </div>
+        <div class="card">
+          <div class="kicker">Release</div>
+          <h3>Checklist and changelog</h3>
+          <p>Release-facing docs now capture the production-layer delta and the final verification list for packaging, Docker, docs, and customer handoff.</p>
         </div>
         <div class="card">
           <div class="kicker">Privacy</div>
-          <h3>Data boundary</h3>
-          <p>Only compact behavioral vectors transmitted. Model weights, inputs, and gradients stay in your environment.</p>
-          <p style="margin-top:12px;"><a href="USER_MANUAL.md#privacy" style="color:var(--accent-dark); font-family:var(--mono); font-size:13px;">Privacy model &rarr;</a></p>
+          <h3>Clear boundary</h3>
+          <p>Customer copy now explicitly states that only compact behavioral vectors are transmitted and that raw vectors are discarded after scoring.</p>
         </div>
       </div>
     </section>
 
     <footer class="footer">
       <div>
-        <h3>signAI</h3>
-        <p>Behavioral integrity monitoring for production ML. Early access available for individual and team plans.</p>
-        <p style="margin-top:10px;"><a href="mailto:umarjanjua@live.com">umarjanjua@live.com</a></p>
+        <h3>signAI production layer</h3>
+        <p>One SDK, one server contract, and a clean path from local artifact mode to hosted or self-hosted deployments.</p>
       </div>
       <div>
         <h3>Docs</h3>
         <p><a href="README.md">README</a></p>
         <p><a href="USER_MANUAL.md">User manual</a></p>
         <p><a href="DEPLOY.md">Deployment guide</a></p>
-        <p><a href="https://github.com/umarjanjua/signai" target="_blank" rel="noreferrer">GitHub</a></p>
+        <p><a href="CHANGELOG.md">Changelog</a></p>
       </div>
       <div>
-        <h3>Get started</h3>
-        <p><code>pip install signai</code></p>
-        <p><a href="#pricing">Early access &amp; pricing</a></p>
-        <p><a href="mailto:umarjanjua@live.com">umarjanjua@live.com</a></p>
+        <h3>CLI</h3>
+        <p><code>signai serve</code></p>
+        <p><code>signai-server serve</code></p>
+        <p><code>docker compose up --build</code></p>
+        <p><code>python -m pytest tests\test_imports.py</code></p>
       </div>
     </footer>
   </div>
