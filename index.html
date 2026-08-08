@@ -349,27 +349,28 @@
 
     <section class="hero">
       <div class="hero-copy">
-        <div class="eyebrow">Production layer v0.4.12</div>
+        <div class="eyebrow">Production layer v0.4.15</div>
         <h1>Behavioral integrity monitoring you can actually ship.</h1>
-        <p>Attach a monitor to a PyTorch model, calibrate on clean data, then score inference batches and training updates locally or through a managed server. One SDK, four deployment modes, and a privacy model built into the architecture.</p>
+        <p>Attach a monitor to a PyTorch model, calibrate on clean data, then score inference batches and training updates -- entirely in-process, no daemon, no network calls. Pre-built artifacts for 90+ HuggingFace models available in the registry.</p>
         <div class="actions">
-        <a class="btn primary" href="#pricing">Early access →</a>
+        <a class="btn primary" href="#pricing">Get started →</a>
         <a class="btn secondary" href="USER_MANUAL.md">User manual</a>
         <a class="btn secondary" href="README.md">README</a>
         </div>
       </div>
       <div class="hero-panel">
         <div class="terminal">
-<div><span class="dim">$</span> pip install "signai[server]"</div>
-<div><span class="dim">$</span> signai-server serve --host 0.0.0.0 --port 8000</div>
-<div><span class="dim">-></span> signAI v0.3.0 (community)</div>
-<div><span class="dim">-></span> docs: http://0.0.0.0:8000/docs</div>
+<div><span class="dim">$</span> pip install signai-sdk</div>
 <div>&nbsp;</div>
-<div><span class="dim">$</span> python app.py</div>
-<div>m = monitor.load(model, endpoint="http://localhost:8000", monitor_id="resnet-prod")</div>
-<div>result = m.score_inference(x, y)</div>
+<div><span class="dim">></span> from signai import monitor</div>
+<div><span class="dim">></span> m = monitor.attach(model, num_classes=10)</div>
+<div><span class="dim">></span> m.calibrate(loader, phase="inference")</div>
+<div><span class="dim">></span> m.save("./integrity.json")</div>
+<div>&nbsp;</div>
+<div><span class="dim">></span> m = monitor.load(model, artifact="./integrity.json")</div>
+<div><span class="dim">></span> result = m.score_inference(x, y)</div>
 <div><span class="ok">flagged=False</span> score=3.21 tau=17.60</div>
-<div>result = m.score_training(logits, loss)</div>
+<div><span class="dim">></span> result = m.score_training(logits, loss)</div>
 <div><span class="warn">flagged=True</span> score=29.44 tau=15.03</div>
         </div>
       </div>
@@ -379,30 +380,20 @@
       <div class="section-head">
         <div>
           <div class="eyebrow">Deployment modes</div>
-          <h2>Same scoring API, different routing.</h2>
+          <h2>Local by default. Enterprise-ready when you need it.</h2>
         </div>
-        <p>Customers can stay fully local, point at a private server, or adopt a hosted endpoint later without rewriting their training or inference loops.</p>
+        <p>The SDK works entirely offline out of the box. No service footprint, no weight transfer, no external calls -- just load an artifact and score.</p>
       </div>
       <div class="grid">
         <div class="card">
-          <div class="kicker">Mode 1</div>
+          <div class="kicker">Standard</div>
           <h3>Local artifact</h3>
-          <p>Load `./integrity.json` and score in-process. Best for notebooks, air-gapped experiments, and teams that want zero service footprint.</p>
+          <p>Load `./integrity.json` and score in-process. Works in notebooks, CI pipelines, and production inference loops. Zero network dependency.</p>
         </div>
         <div class="card">
-          <div class="kicker">Mode 2</div>
-          <h3>Hosted cloud</h3>
-          <p>Point the SDK at a hosted endpoint and keep centralized artifacts, status, and scoring history while still extracting features locally.</p>
-        </div>
-        <div class="card">
-          <div class="kicker">Mode 3</div>
-          <h3>Self-hosted</h3>
-          <p>Run `signai-server` inside a VPC or on a single node with file or SQLite storage. The SDK behavior stays the same.</p>
-        </div>
-        <div class="card">
-          <div class="kicker">Mode 4</div>
+          <div class="kicker">Enterprise</div>
           <h3>Air-gapped</h3>
-          <p>Use the same remote contract against a private internal host with no internet connectivity and no model weight transfer.</p>
+          <p>Deploy entirely inside a VPC or on-premise with no internet connectivity. Raw model weights never leave your environment.</p>
         </div>
       </div>
     </section>
@@ -417,12 +408,12 @@
       </div>
       <div class="manual">
         <div>
-          <h3>SDK quickstart</h3>
+          <h3>Quickstart</h3>
           <ul>
             <li>Attach a monitor with `monitor.attach(...)`.</li>
             <li>Calibrate on clean data with `phase="inference"` or `phase="training"`.</li>
-            <li>Save to `integrity.json`.</li>
-            <li>Reload locally or point at `signai-server`.</li>
+            <li>Save the artifact to `integrity.json`.</li>
+            <li>Reload the artifact at inference time -- no daemon, no network.</li>
             <li>Call `score_inference(x, y)` or `score_training(logits, loss)` in hot paths.</li>
           </ul>
         </div>
@@ -434,27 +425,6 @@ m.save("./integrity.json")
 
 m = monitor.load(model, artifact="./integrity.json", device="cuda")
 result = m.score_inference(x, y)</pre>
-      </div>
-      <div class="manual">
-        <div>
-          <h3>Server quickstart</h3>
-          <ul>
-            <li>`signai-server serve` starts the standalone production API.</li>
-            <li>`signai serve` is a convenience shortcut.</li>
-            <li>Community uses file storage.</li>
-            <li>Pro adds history, notifier, audit export, and status.</li>
-            <li>Enterprise adds Postgres-oriented deployment.</li>
-          </ul>
-        </div>
-        <pre>pip install "signai[server]"
-signai-server serve \
-  --host 0.0.0.0 \
-  --port 8000 \
-  --storage ./artifacts \
-  --store-backend file \
-  --edition community
-
-docker compose up --build</pre>
       </div>
     </section>
 
@@ -581,11 +551,9 @@ docker compose up --build</pre>
         <p><a href="CHANGELOG.md">Changelog</a></p>
       </div>
       <div>
-        <h3>CLI</h3>
-        <p><code>signai serve</code></p>
-        <p><code>signai-server serve</code></p>
-        <p><code>docker compose up --build</code></p>
-        <p><code>python -m pytest tests\test_imports.py</code></p>
+        <h3>Install</h3>
+        <p><code>pip install signai-sdk</code></p>
+        <p><a href="mailto:umarjanjua@live.com">Enterprise enquiries</a></p>
       </div>
     </footer>
   </div>
