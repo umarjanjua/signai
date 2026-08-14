@@ -351,7 +351,7 @@
       <div class="hero-copy">
         <div class="eyebrow">Production layer v0.4.15</div>
         <h1>Behavioral integrity monitoring you can actually ship.</h1>
-        <p>Attach a monitor to a PyTorch model, calibrate on clean data, then score inference batches and training updates -- entirely in-process, no daemon, no network calls. Pre-built artifacts for 90+ HuggingFace models available in the registry.</p>
+        <p>Attach a monitor to a PyTorch model, calibrate on clean data against a local daemon, then score inference batches and training updates entirely in-process -- no network calls, no weight transfer, nothing leaves your machine.</p>
         <div class="actions">
         <a class="btn primary" href="#pricing">Get started →</a>
         <a class="btn secondary" href="https://github.com/umarjanjua/signai/blob/main/USER_MANUAL.md" target="_blank" rel="noopener">User manual</a>
@@ -361,9 +361,10 @@
       <div class="hero-panel">
         <div class="terminal">
 <div><span class="dim">$</span> pip install signai-sdk</div>
+<div><span class="dim">$</span> signai serve</div>
 <div>&nbsp;</div>
 <div><span class="dim">></span> from signai import monitor</div>
-<div><span class="dim">></span> m = monitor.attach(model, num_classes=10)</div>
+<div><span class="dim">></span> m = monitor.attach(model, num_classes=10, monitor_id="my-model")</div>
 <div><span class="dim">></span> m.calibrate(loader, phase="inference")</div>
 <div><span class="dim">></span> m.save("./integrity.json")</div>
 <div>&nbsp;</div>
@@ -382,13 +383,13 @@
           <div class="eyebrow">Deployment modes</div>
           <h2>Local by default. Enterprise-ready when you need it.</h2>
         </div>
-        <p>The SDK works entirely offline out of the box. No service footprint, no weight transfer, no external calls -- just load an artifact and score.</p>
+        <p>Calibration runs against a local daemon on your own machine. After that, scoring needs nothing running -- load an artifact and score in-process. No weight transfer, no external calls, ever.</p>
       </div>
       <div class="grid">
         <div class="card">
           <div class="kicker">Standard</div>
           <h3>Local artifact</h3>
-          <p>Load `./integrity.json` and score in-process. Works in notebooks, CI pipelines, and production inference loops. Zero network dependency.</p>
+          <p>Load `./integrity.json` and score in-process. Works in notebooks, CI pipelines, and production inference loops. Zero network dependency once calibrated.</p>
         </div>
         <div class="card">
           <div class="kicker">Enterprise</div>
@@ -404,22 +405,22 @@
           <div class="eyebrow">How to run</div>
           <h2>Start local, then graduate to server mode.</h2>
         </div>
-        <p>The production layer is built around a very small operational loop: calibrate, save, load, score, and optionally upload the artifact to a service.</p>
+        <p>The production layer is built around a very small operational loop: start the daemon, calibrate, save, then load and score with nothing running. Optionally upload the artifact to a server you host.</p>
       </div>
       <div class="manual">
         <div>
           <h3>Quickstart</h3>
           <ul>
-            <li>Attach a monitor with `monitor.attach(...)`.</li>
+            <li>Start the local daemon with `signai serve`, then attach a monitor with `monitor.attach(..., monitor_id="my-model")`.</li>
             <li>Calibrate on clean data with `phase="inference"` or `phase="training"`.</li>
             <li>Save the artifact to `integrity.json`.</li>
-            <li>Reload the artifact at inference time -- no daemon, no network.</li>
+            <li>Reload the artifact at inference time -- the daemon can be stopped; scoring needs no server and no network.</li>
             <li>Call `score_inference(x, y)` or `score_training(logits, loss)` in hot paths.</li>
           </ul>
         </div>
         <pre>from signai import monitor
 
-m = monitor.attach(model, num_classes=10, device="cuda")
+m = monitor.attach(model, num_classes=10, monitor_id="my-model", device="cuda")
 m.calibrate(clean_loader, device="cuda", phase="inference", calib_batches=200)
 m.save("./integrity.json")
 
@@ -434,46 +435,57 @@ result = m.score_inference(x, y)</pre>
           <div class="eyebrow">Pricing</div>
           <h2>Simple plans. No surprises.</h2>
         </div>
-        <p>Start free. Upgrade when you need nn and assoc detectors, history, and alerts. Enterprise contracts available for air-gapped and compliance deployments.</p>
+        <p>Every paid plan unlocks all three detectors and all server features. Plans differ by seat count and how long scoring history is retained. Air-gapped and compliance deployments are available under an enterprise agreement.</p>
       </div>
       <div class="pricing-grid">
-        <div class="plan-card">
-          <div>
-            <div class="kicker">Community</div>
-            <div class="plan-price-line">
-              <span class="plan-price">Free</span>
-            </div>
-            <p class="plan-tagline">No account needed. Start monitoring immediately after install.</p>
-          </div>
-          <ul class="plan-features">
-            <li>v1 detector (Mahalanobis)</li>
-            <li>10 calibrations / month</li>
-            <li>Local + file-backed server mode</li>
-            <li>Community support</li>
-          </ul>
-          <div class="plan-buy">
-            <a class="btn primary" href="https://github.com/umarjanjua/signai" target="_blank" rel="noopener">Get started free</a>
-          </div>
-        </div>
         <div class="plan-card plan-card--featured">
           <div>
-            <div class="kicker">Pro</div>
+            <div class="kicker">Individual</div>
             <div class="plan-price-line">
-              <span class="plan-price">$49</span>
+              <span class="plan-price">$79</span>
               <span class="plan-per">/month</span>
             </div>
-            <p class="plan-tagline">All three detectors, 200 calibrations/month, history and alerts.</p>
+            <p class="plan-tagline">One seat. All three detectors, 30 days of scoring history.</p>
           </div>
           <ul class="plan-features">
             <li>All 3 detectors (v1, nn, assoc)</li>
-            <li>200 calibrations / month</li>
-            <li>90-day score history</li>
+            <li>Up to 3 monitored models</li>
+            <li>30-day score history</li>
             <li>Alerts and audit export</li>
             <li>Email support</li>
           </ul>
           <div class="plan-buy">
-            <a class="btn primary" href="https://buy.stripe.com/test_dRm7sK5M0gIUehA5rK9Ve07" data-stripe-plan="pro" data-stripe-duration="30" target="_blank" rel="noopener">Upgrade to Pro</a>
+            <a class="btn primary" href="PLACEHOLDER_IND_1MO" data-stripe-plan="individual" data-stripe-duration="30" target="_blank" rel="noopener">Buy 1 month &mdash; $79</a>
           </div>
+          <ul class="plan-features">
+            <li><a href="PLACEHOLDER_IND_3MO" target="_blank" rel="noopener">3 months &mdash; $199</a></li>
+            <li><a href="PLACEHOLDER_IND_6MO" target="_blank" rel="noopener">6 months &mdash; $349</a></li>
+            <li><a href="PLACEHOLDER_IND_12MO" target="_blank" rel="noopener">12 months &mdash; $599</a></li>
+          </ul>
+        </div>
+        <div class="plan-card">
+          <div>
+            <div class="kicker">Team</div>
+            <div class="plan-price-line">
+              <span class="plan-price">$499</span>
+              <span class="plan-per">/3 months</span>
+            </div>
+            <p class="plan-tagline">Up to 5 seats. 12 months of history for quarterly audits and post-incident forensics.</p>
+          </div>
+          <ul class="plan-features">
+            <li>Everything in Individual</li>
+            <li>Up to 5 seats</li>
+            <li>Up to 15 monitored models</li>
+            <li>365-day score history</li>
+            <li>Priority support</li>
+          </ul>
+          <div class="plan-buy">
+            <a class="btn primary" href="PLACEHOLDER_TEAM_3MO" data-stripe-plan="team" data-stripe-duration="90" target="_blank" rel="noopener">Buy 3 months &mdash; $499</a>
+          </div>
+          <ul class="plan-features">
+            <li><a href="PLACEHOLDER_TEAM_6MO" target="_blank" rel="noopener">6 months &mdash; $899</a></li>
+            <li><a href="PLACEHOLDER_TEAM_12MO" target="_blank" rel="noopener">12 months &mdash; $1,499</a></li>
+          </ul>
         </div>
         <div class="plan-card">
           <div>
@@ -481,11 +493,11 @@ result = m.score_inference(x, y)</pre>
             <div class="plan-price-line">
               <span class="plan-price">Contact us</span>
             </div>
-            <p class="plan-tagline">Unlimited calibrations, air-gapped deployment, compliance and dedicated support.</p>
+            <p class="plan-tagline">Unlimited seats and models, air-gapped deployment, compliance and dedicated support.</p>
           </div>
           <ul class="plan-features">
-            <li>Everything in Pro</li>
-            <li>Unlimited calibrations</li>
+            <li>Everything in Team</li>
+            <li>Unlimited seats and models</li>
             <li>Postgres backend</li>
             <li>Air-gapped deployment</li>
             <li>Compliance and audit controls</li>
@@ -497,7 +509,7 @@ result = m.score_inference(x, y)</pre>
         </div>
       </div>
       <p class="pricing-note">
-        License key delivered by email within 1 hour of payment. &nbsp;|&nbsp; All plans include a 3-day free trial of Pro features.
+        License key delivered by email within an hour of payment. &nbsp;|&nbsp; Every install starts with a free 7-day trial &mdash; no card, no account. &nbsp;|&nbsp; Plans are subscriptions and renew automatically. &nbsp;|&nbsp; Keys are Ed25519-signed and verified offline.
       </p>
     </section>
 
@@ -507,23 +519,23 @@ result = m.score_inference(x, y)</pre>
           <div class="eyebrow">Customer docs</div>
           <h2>Everything needed to onboard a customer.</h2>
         </div>
-        <p>The repository now includes product-facing setup instructions, deployment notes, runtime examples, and troubleshooting guidance for the production layer.</p>
+        <p>Product-facing setup instructions, deployment notes, runtime examples, and troubleshooting guidance.</p>
       </div>
       <div class="grid">
         <div class="card">
           <div class="kicker">README</div>
           <h3>Repository entrypoint</h3>
-          <p>Updated with install paths, deployment modes, CLI usage, Docker commands, privacy boundaries, and edition guidance.</p>
+          <p>Install paths, the calibrate-then-score loop, deployment modes, CLI usage, and the privacy boundary.</p>
         </div>
         <div class="card">
           <div class="kicker">Manual</div>
           <h3>User manual</h3>
-          <p>A customer-facing walkthrough covering local mode, remote mode, calibration, runtime scoring, authentication, troubleshooting, and rollout guidance.</p>
+          <p>A customer-facing walkthrough covering setup paths, calibration, runtime scoring, licensing, troubleshooting, and rollout guidance.</p>
         </div>
         <div class="card">
           <div class="kicker">Deploy</div>
           <h3>Deployment guide</h3>
-          <p>A focused operations doc for self-hosted, Docker, SQLite, and Postgres-backed setups, including health checks and production recommendations.</p>
+          <p>An overview of the deployment options -- local artifact scoring, self-hosted, and air-gapped -- and how to choose between them.</p>
         </div>
         <div class="card">
           <div class="kicker">Release</div>

@@ -8,21 +8,19 @@ The full operational implementation lives in the private `signAI-core` repositor
 
 ## Deployment Options
 
-### Local artifact mode
+### Local artifact scoring
+
+Scoring runs in-process against a saved artifact — no server, no network.
 
 Use when:
 
-- a team wants no service dependency
+- a team wants no service dependency at inference time
 - a pilot is running on a single machine
 - an environment is fully offline
 
-### Hosted cloud mode
-
-Use when:
-
-- fast onboarding matters
-- centralized monitor management is desired
-- the customer does not want to operate the service themselves
+Calibration is separate: producing an artifact requires the local signAI daemon
+(`signai serve`, on `localhost:7731`). Once the artifact exists the daemon can be
+stopped and scoring continues without it.
 
 ### Self-hosted mode
 
@@ -46,7 +44,7 @@ Use when:
 2. Behavioral vectors are extracted locally
 3. Scoring runs either:
    - in-process from a local artifact, or
-   - via a configured endpoint
+   - via a self-hosted endpoint you operate
 4. Production workflows consume score and flag results
 
 ## Privacy Boundary
@@ -60,7 +58,7 @@ Use when:
 
 1. Pilot locally
 2. Validate calibration quality
-3. Choose hosted or self-hosted routing
+3. Choose local-artifact or self-hosted routing
 4. Add alerting, history, and audit features as needed
 5. Move into production operations
 
