@@ -1,101 +1,72 @@
 # signAI User Manual
 
+*Customer documentation. The implementation lives in a private repository; this manual covers using signAI, not building it.*
+
 ## Overview
 
-signAI is a runtime behavioral integrity monitor for PyTorch models. It helps teams detect suspicious model behavior during:
+signAI is a runtime behavioral integrity monitor for PyTorch models. It detects suspicious model behavior during:
 
-- inference (input anomaly, distribution shift, activation drift)
-- training (gradient manipulation, targeted poisoning)
-- managed cloud deployments
-- self-hosted and air-gapped environments
+- **inference** — input anomaly, distribution shift, activation drift
+- **training** — gradient manipulation, targeted poisoning
 
-The production layer has one SDK and one server contract. The deployment mode changes only how scoring is routed.
+It runs on a developer workstation, on a self-hosted server inside your network, or fully air-gapped. There is no hosted signAI service — nothing leaves your infrastructure at any point.
+
+---
 
 ## Core Concepts
 
 ### Conditional Behavioral Model (CBM)
 
-For each operating state S, signAI learns the expected behavioral response Z and scores deviations. High deviation scores indicate potential integrity issues.
+For each operating state S, signAI learns the expected behavioral response Z and scores deviations. High deviation means potential integrity loss.
 
-- **S (conditioning vector)**: captures what the model sees — input statistics, prediction confidence, loss level
-- **Z (behavioral vector)**: captures how the model responds — activation patterns, gradient geometry, layer norms
-- **Detector**: fits P(Z|S) on clean calibration data; scores new observations at runtime
-
-### Extractor
-
-An extractor produces (S, Z) pairs from model internals. signAI ships two extractors and supports custom ones:
-
-- `ClassificationExtractor`: for CNNs, ViTs, and HuggingFace classifiers
-- `LLMExtractor`: for LLMs and generative transformers
-
-### Detector kinds
-
-The detector implements the anomaly scoring function. Three kinds are available:
-
-- `v1`: conditional Mahalanobis distance (sklearn-based, fast, no GPU required)
-- `nn`: neural conditional monitor (higher accuracy on complex activation geometry)
-- `assoc`: blockwise association neural monitor (high-dimensional behavioral spaces)
-
-### Monitor
-
-The SDK object you attach to a model:
-
-```python
-from signai import monitor
-```
+- **S (conditioning vector)** — what the model sees: input statistics, prediction confidence, loss level
+- **Z (behavioral vector)** — how the model responds: activation patterns, gradient geometry, layer norms
+- **Detector** — fits P(Z|S) on clean calibration data, then scores new observations at runtime
 
 ### Artifact
 
-A JSON file generated after calibration. It stores detector parameters and thresholds, not model weights.
+A JSON file produced by calibration. It holds detector parameters and thresholds — **not** model weights. Typically 50 KB to 2 MB depending on detector kind.
 
-### Local mode
+### The daemon
 
-The SDK loads the artifact and scores in-process. No server is required.
+A local signAI service on `localhost:7731`. Calibration streams `(S, Z)` vectors to it; it fits the detector and stores the artifact. Start it with `signai serve`. It needs no internet access.
 
-### Remote mode
+### Local artifact scoring
 
-The SDK extracts behavioral vectors locally and sends only those vectors to a server endpoint.
+Once an artifact exists, the SDK loads it and scores in-process — no server, no network. This path cannot calibrate; it scores against a detector fitted earlier.
+
+### Detector kinds
+
+- `v1` — conditional Mahalanobis; fast, CPU-only, most auditable threshold argument
+- `nn` — neural conditional monitor; better on complex activation geometry
+- `assoc` — blockwise association monitor; for transformers and high-dimensional behavioral spaces
 
 ---
 
-## Customer Setup Paths
+## Setup Paths
 
-### Path 1: Local-only
+### Path 1: Workstation — calibrate locally, then score offline
 
-Best for:
+Best for notebooks, experimentation, and teams that don't need centralized history.
 
-- notebooks
-- experimentation
-- offline use
-- teams that do not need centralized history
-
-Workflow:
-
-1. Attach a monitor
-2. Calibrate on clean data
-3. Save the artifact
-4. Load the artifact later and score locally
+1. Start the daemon: `signai serve`
+2. Attach a monitor with a `monitor_id`
+3. Calibrate on clean data
+4. Save the artifact
+5. Stop the daemon — load the artifact and score in-process from here on
 
 ### Path 2: Self-hosted server
 
-Best for:
+Best for platform teams, central alerting, VPC deployment, fleet-wide monitor management.
 
-- internal platform teams
-- central alerting
-- VPC deployment
-- fleet-wide monitor management
-
-Workflow:
-
-1. Start `signai-server`
-2. Attach a monitor with `endpoint=...`
-3. Calibrate locally
-4. Save the artifact, which also uploads it
-5. Score using the same `score_inference` and `score_training` calls
+1. Run signAI server on a shared host inside your network
+2. Calibrate against a daemon and save the artifact
+3. Upload the artifact to the server
+4. Point monitors at the server endpoint and score
 
 ### Path 3: Air-gapped
 
-Same as self-hosted, but the endpoint lives on a private host with no internet access.
+Path 2, with the server on a private host that has no internet access. License keys validate offline, so no connectivity is required at any point.
 
 ---
 
@@ -109,28 +80,29 @@ from signai import monitor
 m = monitor.attach(
     model,
     num_classes=10,
+    monitor_id="my-model",
     device="cuda",
 )
 ```
 
-The extractor is auto-selected: models above 200M parameters or HuggingFace generative models receive `LLMExtractor`; all others receive `ClassificationExtractor`.
+`monitor_id` names the artifact on the daemon. `save()` retrieves the artifact by that name, so a monitor created without one cannot save.
+
+`monitor.attach()` covers classification models. For LLMs and generative transformers, see *Working with LLMs* below.
 
 ### Load an existing monitor
-
-Local:
 
 ```python
 m = monitor.load(model, artifact="./integrity.json", device="cuda")
 ```
 
-Remote:
+Against a self-hosted server:
 
 ```python
 m = monitor.load(
     model,
-    endpoint="http://localhost:8000",
+    endpoint="https://signai.internal:8000",
     monitor_id="my-model",
-    api_key="",
+    api_key="...",
     device="cuda",
 )
 ```
@@ -139,9 +111,9 @@ m = monitor.load(
 
 ## Calibration
 
-Calibration should use clean, representative data.
+Calibrate on clean, representative data. Requires a running daemon.
 
-### Inference calibration
+### Inference
 
 ```python
 m.calibrate(
@@ -152,7 +124,9 @@ m.calibrate(
 )
 ```
 
-### Training calibration
+### Training
+
+`optimizer` and `criterion` are required:
 
 ```python
 m.calibrate(
@@ -165,13 +139,23 @@ m.calibrate(
 )
 ```
 
-### Save the artifact
+### Save
 
 ```python
 m.save("./integrity.json")
 ```
 
-In remote mode, `save()` also uploads the artifact to the configured server.
+This downloads the calibrated artifact from the daemon, writes it to disk, and switches the monitor to local scoring.
+
+### How much data
+
+| Detector | Minimum samples | Recommended |
+|----------|----------------|-------------|
+| `v1` | 100 | 500+ |
+| `nn` | 200 | 1,000+ |
+| `assoc` | 300 | 1,000+ |
+
+Calibration is a one-time cost per model — re-run it only after retraining.
 
 ---
 
@@ -187,7 +171,7 @@ if result.flagged:
 
 ### Training
 
-Call after `optimizer.step()`:
+Call after `optimizer.step()` so parameter deltas are captured:
 
 ```python
 result = m.score_training(logits, loss)
@@ -195,17 +179,9 @@ if result.flagged:
     quarantine_update(result)
 ```
 
-Important:
+Pass `logits` and `loss` — not `x`, `y`, or the optimizer.
 
-- pass `logits` and `loss`
-- do not pass `x`, `y`, or `optimizer` into `score_training`
-- call after `optimizer.step()` so parameter deltas are captured
-
----
-
-## MonitorResult
-
-The SDK returns:
+### MonitorResult
 
 ```python
 MonitorResult(
@@ -218,287 +194,33 @@ MonitorResult(
 )
 ```
 
-If a remote scoring call fails, the SDK returns a safe result with `error` populated instead of raising.
+Scoring is designed not to raise in hot paths. If a remote call fails, you get a result with `error` populated rather than an exception.
+
+### Overhead
+
+| Detector | Per-inference cost |
+|----------|-------------------|
+| `v1` | < 0.05 ms |
+| `nn` | < 0.3 ms |
+| `assoc` | < 0.5 ms |
+
+Negligible against any model forward pass.
 
 ---
 
-## Working with LLMs and Large Models
+## Working with LLMs
 
-For models above 200M parameters or HuggingFace generative models, use `IntegrityMonitor` and `LLMExtractor` directly.
+Monitoring for LLMs and generative transformers uses a different entry point from `monitor.attach()`, which covers classification models. The LLM path uses per-module L2 norm deltas rather than full parameter flattening, so memory stays constant regardless of model size — practical for models in the 7B–70B range.
 
-### Calibrate a language model
-
-```python
-from signai import IntegrityMonitor, LLMExtractor
-
-extractor = LLMExtractor(llm)
-m = IntegrityMonitor(llm, num_classes=None, extractor=extractor, detector_kind="v1")
-m.calibrate_inference(clean_loader, calib_batches=200, device="cuda")
-m.export_json("./integrity_llm.json")
-```
-
-### Score LLM inference
-
-```python
-m = IntegrityMonitor(llm, num_classes=None, extractor=LLMExtractor(llm), detector_kind="v1")
-m.import_json("./integrity_llm.json")
-
-for batch in eval_loader:
-    result = m.score_input(batch["input_ids"], None, device="cuda")
-    if result.flagged:
-        escalate(batch)
-```
-
-### LLMExtractor configuration
-
-```python
-extractor = LLMExtractor(
-    model,
-    max_tracked_layers=24,   # how many module layers to track; default 24
-    use_sensitivity=False,   # sensitivity backward pass; disabled by default for LLMs
-)
-```
-
-The LLMExtractor tracks per-module L2 norm deltas rather than full parameter flattening. This keeps memory constant at O(max_tracked_layers) scalars per step, regardless of model size.
-
-### HuggingFace models
-
-Auto-selection works with HuggingFace models. If `model.config.model_type` is present and `num_classes` is not provided, `LLMExtractor` is selected automatically:
-
-```python
-from transformers import AutoModelForCausalLM
-from signai import SignatureExtractorBase
-
-model = AutoModelForCausalLM.from_pretrained("gpt2")
-extractor = SignatureExtractorBase.auto(model)  # returns LLMExtractor
-```
-
----
-
-## Detector Kinds
-
-The detector kind determines the anomaly scoring algorithm. Set it via `IntegrityMonitor` or the server calibration API.
-
-### v1 — Conditional Mahalanobis
-
-Default. Fast, no GPU required, no neural training needed.
-
-```python
-from signai import IntegrityMonitor, ClassificationExtractor
-
-m = IntegrityMonitor(model, num_classes=10,
-                     extractor=ClassificationExtractor(model),
-                     detector_kind="v1")
-```
-
-### nn — Neural Conditional Monitor
-
-Neural network-based. Better at capturing complex dependencies in the Z space.
-
-```python
-m = IntegrityMonitor(model, num_classes=10,
-                     extractor=ClassificationExtractor(model),
-                     detector_kind="nn",
-                     detector_config={"hidden_dim": 64, "epochs": 30})
-```
-
-### assoc — Blockwise Association Neural Monitor
-
-For high-dimensional behavioral spaces where Z dimension is large.
-
-```python
-m = IntegrityMonitor(model, num_classes=10,
-                     extractor=ClassificationExtractor(model),
-                     detector_kind="assoc",
-                     detector_config={"block_size": 8, "epochs": 30})
-```
-
-### Detector kind and artifact format
-
-Each kind writes a distinct artifact format:
-
-| Kind | Artifact format string |
-|------|----------------------|
-| `v1` | `signai_integrity_v1` |
-| `nn` | `signai_integrity_nn_v1` |
-| `assoc` | `signai_integrity_assoc_v1` |
-
-The artifact format is stored in the JSON file and loaded transparently by `monitor.load()`.
-
----
-
-## Direct IntegrityMonitor API (Advanced)
-
-Use `IntegrityMonitor` directly when you need full control over extractor, detector, and calibration flow.
-
-### Collect raw (S, Z) arrays
-
-```python
-from signai import IntegrityMonitor, ClassificationExtractor
-
-m = IntegrityMonitor(model, num_classes=10,
-                     extractor=ClassificationExtractor(model),
-                     detector_kind="v1")
-
-# Collect without fitting
-S, Z = m.collect_inference_batches(clean_loader, calib_batches=200, device="cuda")
-
-# Fit manually
-m.det_infer.fit(S, Z)
-m.export_json("./integrity.json")
-```
-
-### Score directly
-
-`score_input` and `score_update` take raw model inputs and extract internally:
-
-```python
-# inference — x and y are raw tensors, device is where the model runs
-result = m.score_input(x, y, device="cuda")
-```
-
-```python
-# training — call after optimizer.step()
-result = m.score_update(logits, loss)
-```
-
-To access the raw `(s, z)` vectors (e.g. for logging or custom thresholds):
-
-```python
-s, z = m.extractor.extract_inference(x, y, device="cuda")
-det_score = m.det_infer.score(s, z)
-```
-
----
-
-## Custom Extractor Plugins
-
-To support a model architecture that neither `ClassificationExtractor` nor `LLMExtractor` covers:
-
-```python
-from signai import SignatureExtractorBase, IntegrityMonitor
-import numpy as np
-
-class TabularExtractor(SignatureExtractorBase):
-    def __init__(self, model):
-        self._model = model
-        self._ema = None
-
-    def prepare(self, example_batch):
-        pass  # tabular models need no hook setup
-
-    def reset_state(self):
-        self._ema = None
-
-    def extract_training(self, logits, loss):
-        # s: [loss, entropy]
-        # z: [delta_l2, ema_cos]
-        ...
-        return s.astype(np.float32), z.astype(np.float32)
-
-    def extract_inference(self, x, y, device="cpu", use_sensitivity=True):
-        ...
-        return s.astype(np.float32), z.astype(np.float32)
-
-# Use it
-m = IntegrityMonitor(model, num_classes=2,
-                     extractor=TabularExtractor(model),
-                     detector_kind="v1")
-```
-
-The `extract_training` and `extract_inference` methods must return `float32` numpy arrays with consistent dimensions across calls.
-
----
-
-## Server Operation
-
-### Start a file-backed server
-
-```bash
-signai-server serve --host 0.0.0.0 --port 8000 --storage ./artifacts
-```
-
-### Start with SQLite
-
-```bash
-signai-server serve \
-  --host 0.0.0.0 \
-  --port 8000 \
-  --store-backend sqlite \
-  --database-url sqlite:///./signai.db
-```
-
-### Start with Postgres
-
-```bash
-signai-server serve \
-  --host 0.0.0.0 \
-  --port 8000 \
-  --store-backend postgres \
-  --database-url postgresql://user:pass@host:5432/signai
-```
-
----
-
-## Authentication
-
-Set an API key:
-
-```bash
-signai-server serve --api-key "your-secret"
-```
-
-Then connect with:
-
-```python
-m = monitor.load(
-    model,
-    endpoint="http://localhost:8000",
-    api_key="your-secret",
-    monitor_id="my-model",
-)
-```
-
----
-
-## Docker
-
-Build:
-
-```bash
-docker build -t signai .
-```
-
-Run:
-
-```bash
-docker run -p 8000:8000 -v %cd%\artifacts:/data signai
-```
-
-Compose:
-
-```bash
-docker compose up --build
-```
-
----
-
-## Recommended Customer Rollout
-
-1. Start in local artifact mode with the default v1 detector
-2. Validate thresholds on clean and known-bad traffic
-3. Move to self-hosted server mode if history or centralized operations are needed
-4. Add notifier configuration for flagged events
-5. Evaluate nn or assoc detectors if v1 thresholds are noisy on your model
-6. Move to SQLite or Postgres storage when audit history retention matters
+Contact umarjanjua@live.com for the LLM onboarding guide and a worked example for your architecture.
 
 ---
 
 ## Licensing
 
-A license key gates all usage (calibration, scoring, history, alerts).
+A valid license gates all usage — calibration, scoring, history and alerts.
 
-A bundled trial key is active on fresh installs — no action needed to get started.
+Fresh installs get a **3-day trial** automatically. No key, no account, no card. The trial unlocks every detector and every feature, with a 3-model limit and 7 days of scoring history.
 
 ### Apply a key
 
@@ -506,7 +228,7 @@ A bundled trial key is active on fresh installs — no action needed to get star
 signai apply-key sk_...
 ```
 
-The key is saved to `~/.signai/license.json` (or `$SIGNAI_HOME/license.json`).
+Saved to `~/.signai/license.json` (or `$SIGNAI_HOME/license.json`).
 
 ### Check status
 
@@ -514,63 +236,60 @@ The key is saved to `~/.signai/license.json` (or `$SIGNAI_HOME/license.json`).
 signai status
 ```
 
-Shows seat ID, plan, features, expiry date, and calibrations used this month.
+Shows status, seat, plan, features, model limit, history retention and expiry. Calibrations are not metered — there is no per-month usage count.
 
-### Renew or upgrade
+### Renew
 
-Visit https://umarjanjua.github.io/signai/ to purchase a new key. Run `signai apply-key sk_...` with the new key — it replaces the previous one immediately.
+Purchase or renew at https://umarjanjua.github.io/signai/, then run `signai apply-key` with the new key. It replaces the previous one immediately.
 
-Keys are scoped by features and expiry date at issuance time.
+Keys are Ed25519-signed and verified offline — no network call at validation time.
 
 ---
 
 ## Troubleshooting
 
-### `No backend configured`
+### `No signAI daemon found. Start it with: signai serve`
 
-Cause: you attached and calibrated but did not save.
+`calibrate()` or `save()` was called with no daemon reachable on `localhost:7731`. Start it and retry.
+
+### `save()` returns a 404 for `/v1/artifacts//download`
+
+The monitor was created without a `monitor_id`, so there is no artifact name to fetch:
 
 ```python
-m.save("./integrity.json")
+m = monitor.attach(model, num_classes=10, monitor_id="my-model")
 ```
 
-### Remote scoring returns `error`
+### `Monitor is not calibrated. Call calibrate() before scoring.`
 
-Cause: endpoint unavailable, bad API key, or artifact not uploaded yet.
+You attached a monitor and scored it without calibrating, or calibration did not complete. Calibrate, then save.
 
-- verify server health at `/health`
-- verify `monitor_id`
-- verify `m.save(...)` was called in remote mode
+### `optimizer and criterion are required for training calibration`
 
-### 402 response on history/status endpoints
+Training calibration needs both:
 
-Cause: no valid license key is active.
-
-Apply a license key and restart:
-
-```bash
-signai apply-key sk_...
-signai-server serve ...
+```python
+m.calibrate(loader, device="cuda", phase="training",
+            optimizer=optimizer, criterion=criterion)
 ```
+
+### `Torch not compiled with CUDA enabled`
+
+Pass `device="cpu"` to `calibrate()`. All three detectors score on CPU; a GPU only speeds up `nn` and `assoc` calibration.
+
+### 402 response on history or scoring
+
+No valid license is active — the trial has expired and no key is applied. Run `signai apply-key sk_...`.
 
 ### Scores are always near zero
 
-Cause: calibration data was too small or not representative.
-
-Increase `calib_batches` or use more diverse clean samples.
-
-### LLMExtractor gives all-zero Z vectors
-
-Cause: the model has no named children (e.g., a single wrapped module).
-
-Check `list(model.named_children())`. If empty, the extractor tracks root-level parameters. This is expected and produces a valid but simplified Z.
+Calibration data was too small or unrepresentative. Increase `calib_batches` or use more diverse clean samples.
 
 ---
 
 ## Operational Notes
 
-- scoring endpoints are designed not to raise in hot paths
-- setup operations such as artifact upload can raise on failure
-- remote servers store scores and flags, not raw behavioral vectors
-- calibrate on representative clean traffic for best thresholds
-- sensitivity backward pass is disabled in `LLMExtractor` by default (too expensive for large models)
+- scoring endpoints are designed not to raise in hot paths; setup operations such as artifact upload can raise
+- calibrate on representative clean traffic — threshold quality follows directly from this
+- servers store `{ts, score, flagged, phase}` only, never raw behavioral vectors
+- re-calibrate after retraining; a stale artifact describes a model that no longer exists
