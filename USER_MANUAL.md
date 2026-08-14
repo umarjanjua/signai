@@ -220,7 +220,7 @@ Contact umarjanjua@live.com for the LLM onboarding guide and a worked example fo
 
 A valid license gates all usage — calibration, scoring, history and alerts.
 
-Fresh installs get a **3-day trial** automatically. No key, no account, no card. The trial unlocks every detector and every feature, with a 3-model limit and 7 days of scoring history.
+Fresh installs get a **14-day trial** automatically. No key, no account, no card. The trial unlocks every detector and every feature, with a 1-model limit and 7 days of scoring history. Paid plans start at 3 models and 30 days of history.
 
 ### Apply a key
 

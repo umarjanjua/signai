@@ -134,7 +134,9 @@ signAI runs on a workstation, on a self-hosted server inside your VPC, or fully 
 
 ## Licensing
 
-Fresh installs get a **3-day trial** automatically — no key, no account, no card. It unlocks every detector and every feature.
+Fresh installs get a **14-day trial** automatically — no key, no account, no card. It unlocks every detector and every feature, for one monitored model.
+
+Paid plans are subscriptions: each billing period emails you a fresh key, so licences renew without a manual step.
 
 ```bash
 signai apply-key sk_...    # activate or renew
